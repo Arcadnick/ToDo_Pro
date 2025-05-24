@@ -3,18 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Расширенный To-Do List</title>
-    <link rel="stylesheet" href="css/main.css">
+    <title>ToDo Pro</title>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-<header>
-    <h1>Расширенный To-Do List</h1>
-</header>
+<!-- Боковое меню -->
+<div class="sidebar">
+    <h2>МЕНЮ</h2>
+    <div class="search-bar">
+        <span>🔍</span>
+        <input type="text" placeholder="Поиск">
+    </div>
 
-<main>
+    <div class="sidebar-group">
+        <div class="text-title-sidebar">Задачи</div>
+        <div class="task-menu">
+            <div class="task-item">
+                <span>📥</span> Приближающиеся <span>12</span>
+            </div>
+            <div class="task-item">
+                <span>📅</span> Сегодня <span>5</span>
+            </div>
+            <div class="task-item">
+                <span>🗓️</span> Календарь
+            </div>
+            <div class="task-item">
+                <span>📝</span> Заметки-стикеры
+            </div>
+        </div>
+    </div>
 
-</main>
+    <div class="sidebar-group">
+        <div class="text-title-sidebar">Списки</div>
+        <div class="list-menu">
+            <div class="list-item">
+                <div class="dot personal"></div> Личный <span>3</span>
+            </div>
+            <div class="list-item">
+                <div class="dot work"></div> Рабочий <span>6</span>
+            </div>
+            <div class="list-item">
+                <div class="dot list1"></div> Список 1 <span>3</span>
+            </div>
+            <div class="add-list">+ Добавить новый список</div>
+        </div>
+    </div>
 
-<script src="js/main.js"></script>
+    <div class="sidebar-group">
+        <div class="text-title-sidebar">Тэги</div>
+        <div class="tag-menu">
+            <div class="tag-item">Тэг 1</div>
+            <div class="tag-item">Тэг 2</div>
+            <div class="tag-item">+</div>
+        </div>
+    </div>
+</div>
+
+<!-- Рабочая область -->
+<div class="main-content">
+    <h1>Сегодня 10</h1>
+    <div class="actions">
+        <hr>
+        <div class="actions-item">+ Добавить задачу</div>
+        <hr>
+        <div class="actions-item">
+            <input type="checkbox" >
+            Изучить идеи для постов
+        </div>
+        <hr>
+        <div class="actions-item">
+            <input type="checkbox" >
+            Создать бд
+        </div>
+        <hr>
+        <div class="actions-item">
+            <input type="checkbox">
+            Продлить права
+            <div class="action-description"></div>
+        </div>
+        <hr>
+        <div class="actions-item">
+            <input type="checkbox">
+            консультация с юристом
+        </div>
+        <hr>
+    </div>
+</div>
+<script src="js/script.js"></script>
 </body>
 </html>

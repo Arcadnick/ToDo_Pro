@@ -1,0 +1,141 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    height: 100vh;
+    background-color: #f5f5f5;
+}
+
+/* Боковое меню */
+.sidebar {
+    width: 250px;
+    background-color: #fff;
+    padding: 20px;
+    border-right: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sidebar h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+}
+
+.search-bar input {
+    border: none;
+    background: none;
+    outline: none;
+    flex-grow: 1;
+}
+
+.text-title-sidebar{
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.task-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.task-item:hover {
+    background-color: #f0f0f0;
+}
+
+.task-item span {
+    font-size: 14px;
+    color: #888;
+}
+
+.list-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.list-item span {
+    font-size: 14px;
+    color: #888;
+}
+
+.list-item:hover {
+    background-color: #f0f0f0;
+}
+
+.list-item .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.list-item .dot.personal { background-color: #ff6f61; }
+.list-item .dot.work { background-color: #61cffd; }
+.list-item .dot.list1 { background-color: #ffd700; }
+
+.add-list {
+    color: #888;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.add-list:hover {
+    color: #000;
+}
+
+/* Рабочая область */
+.main-content {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #fff;
+}
+
+.main-content h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    flex-direction: column;
+}
+
+.tag-menu {
+    display: flex;
+    gap: 10px;
+}
+
+.tag-item {
+    padding: 10px 10px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.tag-item:hover {
+    background-color: #f0f0f0;
+}
