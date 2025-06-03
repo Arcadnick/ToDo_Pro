@@ -80,6 +80,27 @@ body {
     align-items: center;
 }
 
+.task-item-icon{
+    padding-right: 10px;
+}
+
+.task-item-left, .list-item-left {
+    display: flex;
+    align-items: center;
+}
+
+.task-item-count,.list-item-count {
+    font-size: 14px;
+    color: #555;
+    background: #dddcdc;
+    padding: 3px;
+    border-radius: 4px;
+    width: 22px;
+    justify-content: center;
+    display: flex
+;
+}
+
 .task-item.active, .task-item:hover,
 .list-item:hover, .tag-item:hover, .add-list:hover {
     background-color: #f0f0f0;
