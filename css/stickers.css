@@ -24,6 +24,7 @@ body {
 }
 
 .sticker {
+    position: relative;
     padding: 16px;
     border-radius: 10px;
     min-height: 150px;
@@ -70,4 +71,20 @@ body {
 
 .add-sticker:hover {
     background-color: #ddd;
+}
+
+.delete-btn {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    background: transparent;
+    border: none;
+    color: #333;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.sticker.dragging {
+    opacity: 0.5;
+    transform: scale(0.98);
 }
