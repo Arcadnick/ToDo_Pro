@@ -10,27 +10,18 @@
 <!-- Боковое меню -->
 <div class="sidebar">
     <h2>Меню </h2>
-
     <div class="search-bar">
         <span>🔍</span>
         <input type="text" placeholder="Поиск">
     </div>
-
     <div class="sidebar-group">
         <div class="text-title-sidebar">Задачи</div>
         <div class="task-menu">
-            <button class="task-item" onclick="location.href='upcoming.html'">
-                <div class="task-item-left">
-                    <span class="task-item-icon">📌</span> Приближающиеся
-                </div>
-                <span class="task-item-count">12</span>
-            </button>
-
             <button class="task-item active" onclick="location.href='index.html'">
                 <div class="task-item-left">
                     <span class="task-item-icon">📎</span> Сегодня
                 </div>
-                <span class="task-item-count">5</span>
+                <span class="task-item-count" id="task-count2">52</span>
             </button>
 
             <button class="task-item" onclick="location.href='calendar.html'">
@@ -48,38 +39,12 @@
     </div>
 
     <div class="sidebar-group">
-        <div class="text-title-sidebar">Списки</div>
-        <div class="list-menu">
-            <button class="list-item">
-                <div class="list-item-left">
-                    <span class="dot personal"></span> Личный
-                </div>
-                <span class="list-item-count">3</span>
-            </button>
-            <button class="list-item">
-                <div class="list-item-left">
-                    <span class="dot work"></span> Рабочий
-                </div>
-                <span class="list-item-count">6</span>
-            </button>
-            <button class="list-item">
-                <div class="list-item-left">
-                    <span class="dot list1"></span> Список 1
-                </div>
-                <span class="list-item-count">3</span>
-            </button>
-            <button id="addListBtn" class="list-item add-list">
-                + Добавить новый список
-            </button>
-        </div>
-    </div>
-
-    <div class="sidebar-group">
         <div class="text-title-sidebar">Тэги</div>
-        <div class="tag-menu">
-            <button class="tag-item">Тэг 1</button>
-            <button class="tag-item">Тэг 2</button>
-            <button id="addTagBtn" class="tag-item">+</button>
+        <div class="tag-menu" id="tagMenu">
+
+            <div class="add-tag-wrapper" id="addTagWrapper">
+                <button id="addTagBtn" class="tag-item">+</button>
+            </div>
         </div>
     </div>
 
@@ -91,44 +56,90 @@
 
 <!-- Основная рабочая область -->
 <div class="main-content">
-    <h1>Сегодня <span id="task-count">10</span></h1>
+    <h1>Сегодня <span id="task-count">52</span></h1>
 
     <div class="actions">
         <button id="addTaskBtn" class="actions-item add-task">+ Добавить задачу</button>
 
-        <div class="actions-item">
-            <input type="checkbox" id="task1">
-            <label for="task1">Изучить идеи для постов</label>
-        </div>
+<!--        <div class="actions-item">-->
+<!--            <input type="checkbox" id="task1">-->
+<!--            <label for="task1">Изучить идеи для постов</label>-->
+<!--        </div>-->
 
-        <div class="actions-item">
-            <input type="checkbox" id="task2">
-            <label for="task2">Создать базу данных</label>
-        </div>
+<!--        <div class="actions-item">-->
+<!--            <input type="checkbox" id="task2">-->
+<!--            <label for="task2">Создать базу данных</label>-->
+<!--        </div>-->
 
-        <div class="actions-item">
-            <input type="checkbox" id="task3">
-            <label for="task3">Продлить водительские права до</label>
-            <div class="action-description">
-                📅 01-01-2025 · 1 Подзадачи · 🔴 Личный
-            </div>
-        </div>
+<!--        <div class="actions-item">-->
+<!--            <input type="checkbox" id="task3">-->
+<!--            <label for="task3">Продлить водительские права до</label>-->
+<!--            <div class="action-description">-->
+<!--                📅 01-01-2025 · 1 Подзадачи · 🔴 Личный-->
+<!--            </div>-->
+<!--        </div>-->
 
-        <div class="actions-item">
-            <input type="checkbox" id="task4">
-            <label for="task4">Проконсультироваться с юристом</label>
-            <div class="action-description">
-                🟡 Список 1 · 5 Подзадачи
-            </div>
-        </div>
+<!--        <div class="actions-item">-->
+<!--            <input type="checkbox" id="task4">-->
+<!--            <label for="task4">Проконсультироваться с юристом</label>-->
+<!--            <div class="action-description">-->
+<!--                🟡 Список 1 · 5 Подзадачи-->
+<!--            </div>-->
+<!--        </div>-->
 
-        <div class="actions-item">
-            <input type="checkbox" id="task5">
-            <label for="task5">Распечатать документы</label>
-        </div>
+<!--        <div class="actions-item">-->
+<!--            <input type="checkbox" id="task5">-->
+<!--            <label for="task5">Распечатать документы</label>-->
+<!--        </div>-->
     </div>
 </div>
 
+<div class="modal-overlay" id="taskModal">
+    <div class="modal">
+        <h2>Новая задача</h2>
+        <form id="taskForm">
+            <label>
+                Название<span class="required">*</span><br>
+                <input type="text" id="taskTitle" maxlength="100" required>
+            </label>
+
+            <label>
+                Приоритет<span class="required">*</span><br>
+                <select id="taskPriority" required>
+                    <option value="">Выберите...</option>
+                    <option value="low">Низкий</option>
+                    <option value="medium">Средний</option>
+                    <option value="high">Высокий</option>
+                </select>
+            </label>
+
+            <label>
+                Срок выполнения<span class="required">*</span><br>
+                <input type="date" id="taskDeadline" required>
+            </label>
+
+            <label>
+                Описание<br>
+                <textarea id="taskDescription"></textarea>
+            </label>
+
+            <label>
+                Теги<br>
+                <div id="taskTagList" class="tag-checkbox-list"></div>
+            </label>
+
+            <label>
+                Вложения<br>
+                <input type="file" id="taskFiles" multiple>
+            </label>
+
+            <div class="modal-actions">
+                <button type="submit">Добавить</button>
+                <button type="button" id="cancelModal">Отмена</button>
+            </div>
+        </form>
+    </div>
+</div>
 <script src="js/script.js"></script>
 </body>
 </html>
