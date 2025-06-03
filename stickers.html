@@ -8,9 +8,9 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-<!-- Боковое меню — можешь переиспользовать из index.html -->
+<!-- Боковое меню -->
 <div class="sidebar">
-    <h2>Меню <button class="menu-toggle">☰</button></h2>
+    <h2>Меню </h2>
 
     <div class="search-bar">
         <span>🔍</span>
@@ -20,17 +20,30 @@
     <div class="sidebar-group">
         <div class="text-title-sidebar">Задачи</div>
         <div class="task-menu">
-            <button class="task-item" data-filter="upcoming">
-                <span>»</span> Приближающиеся <span>12</span>
+            <button class="task-item" onclick="location.href='upcoming.html'">
+                <div class="task-item-left">
+                    <span class="task-item-icon">📌</span> Приближающиеся
+                </div>
+                <span class="task-item-count">12</span>
             </button>
-            <button class="task-item active" data-filter="today">
-                <span>▣</span> Сегодня <span>5</span>
+
+            <button class="task-item active" onclick="location.href='index.html'">
+                <div class="task-item-left">
+                    <span class="task-item-icon">📎</span> Сегодня
+                </div>
+                <span class="task-item-count">5</span>
             </button>
-            <button class="task-item" disabled>
-                <span>📅</span> Календарь
+
+            <button class="task-item" onclick="location.href='calendar.html'">
+                <div class="task-item-left">
+                    <span class="task-item-icon">📅</span> Календарь
+                </div>
             </button>
-            <button class="task-item" disabled>
-                <span>🗒️</span> Заметки-стикеры
+
+            <button class="task-item" onclick="location.href='stickers.html'">
+                <div class="task-item-left">
+                    <span class="task-item-icon">🗒️</span> Заметки-стикеры
+                </div>
             </button>
         </div>
     </div>
@@ -38,10 +51,27 @@
     <div class="sidebar-group">
         <div class="text-title-sidebar">Списки</div>
         <div class="list-menu">
-            <button class="list-item"><span class="dot personal"></span> Личный <span>3</span></button>
-            <button class="list-item"><span class="dot work"></span> Рабочий <span>6</span></button>
-            <button class="list-item"><span class="dot list1"></span> Список 1 <span>3</span></button>
-            <button id="addListBtn" class="add-list">+ Добавить новый список</button>
+            <button class="list-item">
+                <div class="list-item-left">
+                    <span class="dot personal"></span> Личный
+                </div>
+                <span class="list-item-count">3</span>
+            </button>
+            <button class="list-item">
+                <div class="list-item-left">
+                    <span class="dot work"></span> Рабочий
+                </div>
+                <span class="list-item-count">6</span>
+            </button>
+            <button class="list-item">
+                <div class="list-item-left">
+                    <span class="dot list1"></span> Список 1
+                </div>
+                <span class="list-item-count">3</span>
+            </button>
+            <button id="addListBtn" class="list-item add-list">
+                + Добавить новый список
+            </button>
         </div>
     </div>
 
@@ -55,10 +85,11 @@
     </div>
 
     <div class="sidebar-bottom">
-        <button class="settings-btn">⚙ Настройки</button>
+        <button class="settings-btn" onclick="location.href='settings.html'">⚙️ Настройки</button>
         <button class="logout-btn">⇦ Выйти</button>
     </div>
 </div>
+
 
 <!-- Основной контент -->
 <div class="main-content">

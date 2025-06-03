@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const stickersGrid = document.getElementById('stickers');
 
     let stickers = JSON.parse(localStorage.getItem('stickers')) || [];
+    let dragSourceId = null;
+    let lastTargetId = null;
 
     function saveStickers() {
         localStorage.setItem('stickers', JSON.stringify(stickers));
@@ -16,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function swapStickers(id1, id2) {
         const index1 = stickers.findIndex(s => s.id === id1);
         const index2 = stickers.findIndex(s => s.id === id2);
-        if (index1 !== -1 && index2 !== -1) {
+        if (index1 !== -1 && index2 !== -1 && index1 !== index2) {
             [stickers[index1], stickers[index2]] = [stickers[index2], stickers[index1]];
             saveStickers();
             renderAllStickers();
@@ -60,38 +62,39 @@ document.addEventListener('DOMContentLoaded', () => {
             renderAllStickers();
         });
 
-        // drag events
         sticker.addEventListener('dragstart', () => {
+            dragSourceId = id;
+            lastTargetId = null;
             sticker.classList.add('dragging');
         });
 
         sticker.addEventListener('dragover', (e) => {
             e.preventDefault();
-            const dragging = stickersGrid.querySelector('.dragging');
-            if (dragging && dragging !== sticker) {
-                const idFrom = parseInt(dragging.dataset.id);
-                const idTo = parseInt(sticker.dataset.id);
-                swapStickers(idFrom, idTo);
+            if (id !== dragSourceId) {
+                lastTargetId = id; // запоминаем последний стикер, над которым прошли
             }
         });
 
         sticker.addEventListener('dragend', () => {
             sticker.classList.remove('dragging');
+            if (lastTargetId && dragSourceId && lastTargetId !== dragSourceId) {
+                swapStickers(dragSourceId, lastTargetId);
+            }
+            dragSourceId = null;
+            lastTargetId = null;
         });
 
         sticker.appendChild(deleteBtn);
         sticker.appendChild(titleElem);
         sticker.appendChild(contentElem);
 
-        return sticker;
+        stickersGrid.insertBefore(sticker, addBtn);
     }
 
     function renderAllStickers() {
-        // Удаляем все кроме кнопки добавления
         stickersGrid.querySelectorAll('.sticker:not(.add-sticker)').forEach(el => el.remove());
         stickers.forEach(data => {
-            const el = createStickerElement(data);
-            stickersGrid.insertBefore(el, addBtn);
+            createStickerElement(data);
         });
     }
 
@@ -116,7 +119,6 @@ document.addEventListener('DOMContentLoaded', () => {
         renderAllStickers();
     });
 
-    // Инициализация
     renderAllStickers();
 });
 
