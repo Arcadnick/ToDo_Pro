@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ToDo Pro</title>
+    <title>Заметки-стикеры</title>
+    <link rel="stylesheet" href="css/stickers.css">
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-<!-- Боковое меню -->
+<!-- Боковое меню — можешь переиспользовать из index.html -->
 <div class="sidebar">
     <h2>Меню <button class="menu-toggle">☰</button></h2>
 
@@ -59,46 +60,45 @@
     </div>
 </div>
 
-<!-- Основная рабочая область -->
+<!-- Основной контент -->
 <div class="main-content">
-    <h1>Сегодня <span id="task-count">10</span></h1>
-
-    <div class="actions">
-        <button id="addTaskBtn" class="actions-item add-task">+ Добавить задачу</button>
-
-        <div class="actions-item">
-            <input type="checkbox" id="task1">
-            <label for="task1">Изучить идеи для постов</label>
+    <h1>Заметки-стикеры</h1>
+    <div id="stickers" class="stickers-grid">
+        <!-- Пример стикера -->
+        <div class="sticker yellow">
+            <h3>Социальные сети</h3>
+            <ul>
+                <li>Пост в субботу</li>
+                <li>Составить календарь на месяц</li>
+                <li>Купить продвижение постов</li>
+            </ul>
         </div>
 
-        <div class="actions-item">
-            <input type="checkbox" id="task2">
-            <label for="task2">Создать базу данных</label>
+        <div class="sticker blue">
+            <h3>Контент-план</h3>
+            <p>Бабочки, фотка с концерта, благотворительная акция и т.д.</p>
         </div>
 
-        <div class="actions-item">
-            <input type="checkbox" id="task3">
-            <label for="task3">Продлить водительские права до</label>
-            <div class="action-description">
-                📅 01-01-2025 · 1 Подзадачи · 🔴 Личный
-            </div>
+        <div class="sticker pink">
+            <h3>Электронные письма</h3>
+            <ul>
+                <li>Коллеге</li>
+                <li>Начальнику</li>
+                <li>Стажеру</li>
+                <li>Бабуле</li>
+            </ul>
         </div>
 
-        <div class="actions-item">
-            <input type="checkbox" id="task4">
-            <label for="task4">Проконсультироваться с юристом</label>
-            <div class="action-description">
-                🟡 Список 1 · 5 Подзадачи
-            </div>
+        <div class="sticker orange">
+            <h3>Размещение рекламы</h3>
+            <p>Везде и много</p>
         </div>
 
-        <div class="actions-item">
-            <input type="checkbox" id="task5">
-            <label for="task5">Распечатать документы</label>
-        </div>
+        <!-- Кнопка добавления -->
+        <button id="addStickerBtn" class="sticker add-sticker">+</button>
     </div>
 </div>
 
-<script src="js/script.js"></script>
+<script src="js/stickers.js"></script>
 </body>
 </html>

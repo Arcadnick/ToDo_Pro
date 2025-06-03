@@ -1,141 +1,193 @@
 * {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', sans-serif;
 }
 
 body {
     display: flex;
-    height: 100vh;
-    background-color: #f5f5f5;
+    background-color: #f9f9f9;
+    color: #222;
+    min-height: 100vh;
 }
 
-/* Боковое меню */
+/* === SIDEBAR === */
 .sidebar {
-    width: 250px;
+    width: 280px;
     background-color: #fff;
     padding: 20px;
     border-right: 1px solid #e0e0e0;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 20px;
 }
 
 .sidebar h2 {
     font-size: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.menu-toggle {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
 }
 
 .search-bar {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 10px;
-    background-color: #f0f0f0;
-    border-radius: 5px;
+    border: 1px solid #ddd;
+    padding: 6px 10px;
+    border-radius: 6px;
 }
 
 .search-bar input {
     border: none;
-    background: none;
     outline: none;
-    flex-grow: 1;
+    flex: 1;
 }
 
-.text-title-sidebar{
-    font-size: 20px;
-    margin-bottom: 10px;
+/* === GROUP TITLES === */
+.text-title-sidebar {
+    font-size: 14px;
+    font-weight: bold;
+    color: #666;
+    margin-bottom: 5px;
 }
 
-.task-item {
+.task-menu, .list-menu, .tag-menu {
     display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
+    flex-direction: column;
+    gap: 5px;
 }
 
-.task-item:hover {
+.task-item, .list-item, .tag-item, .add-list {
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.task-item.active, .task-item:hover,
+.list-item:hover, .tag-item:hover, .add-list:hover {
     background-color: #f0f0f0;
 }
 
-.task-item span {
-    font-size: 14px;
-    color: #888;
+.add-list {
+    color: #444;
+    font-weight: bold;
 }
 
-.list-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.list-item span {
-    font-size: 14px;
-    color: #888;
-}
-
-.list-item:hover {
-    background-color: #f0f0f0;
-}
-
-.list-item .dot {
+/* DOT COLORS */
+.dot {
+    display: inline-block;
     width: 10px;
     height: 10px;
     border-radius: 50%;
+    margin-right: 8px;
 }
 
-.list-item .dot.personal { background-color: #ff6f61; }
-.list-item .dot.work { background-color: #61cffd; }
-.list-item .dot.list1 { background-color: #ffd700; }
+.personal { background-color: #f44336; }
+.work { background-color: #03a9f4; }
+.list1 { background-color: #ffc107; }
 
-.add-list {
-    color: #888;
-    padding: 10px;
+/* TAG COLORS */
+.tag-item {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 13px;
+    background-color: #eee;
+    color: #333;
+    border: none;
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sidebar-bottom button {
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 6px 10px;
+    font-size: 14px;
+    color: #666;
     cursor: pointer;
 }
 
-.add-list:hover {
+.sidebar-bottom button:hover {
     color: #000;
 }
 
-/* Рабочая область */
+/* === MAIN CONTENT === */
 .main-content {
-    flex-grow: 1;
-    padding: 20px;
-    background-color: #fff;
+    flex: 1;
+    padding: 30px;
 }
 
 .main-content h1 {
-    font-size: 24px;
+    font-size: 26px;
     margin-bottom: 20px;
 }
 
 .actions {
     display: flex;
-    flex-wrap: wrap;
-    gap: 25px;
     flex-direction: column;
+    gap: 12px;
 }
 
-.tag-menu {
+.actions-item {
+    background-color: #fff;
+    padding: 10px 14px;
+    border-radius: 8px;
     display: flex;
+    align-items: center;
     gap: 10px;
+    box-shadow: 0 0 3px rgba(0,0,0,0.05);
+    cursor: default;
 }
 
-.tag-item {
-    padding: 10px 10px;
-    background-color: #e0e0e0;
-    border-radius: 5px;
+.actions-item input[type="checkbox"] {
+    transform: scale(1.2);
+}
+
+.actions-item label {
+    flex: 1;
     cursor: pointer;
-    font-size: 14px;
 }
 
-.tag-item:hover {
+.actions-item.add-task {
+    font-weight: bold;
     background-color: #f0f0f0;
+    cursor: pointer;
+}
+
+.actions-item.add-task:hover {
+    background-color: #e0e0e0;
+}
+
+.action-description {
+    font-size: 12px;
+    color: #777;
+    margin-left: auto;
+}
+
+.completed label {
+    text-decoration: line-through;
+    color: #aaa;
 }

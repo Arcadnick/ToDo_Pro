@@ -1,0 +1,199 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+    width: 250px;
+    background: #fff;
+    border-right: 1px solid #ddd;
+    padding: 20px;
+}
+
+.sidebar h2 {
+    margin-bottom: 10px;
+}
+
+.search-bar {
+    display: flex;
+    gap: 10px;
+    border: 1px solid #ddd;
+    padding: 6px;
+    margin-bottom: 20px;
+}
+
+.search-bar input {
+    border: none;
+    flex: 1;
+    outline: none;
+}
+
+.text-title-sidebar {
+    font-size: 14px;
+    font-weight: bold;
+    color: #555;
+    margin: 10px 0 5px;
+}
+
+.task-item {
+    display: block;
+    border: none;
+    background: none;
+    padding: 6px 0;
+    text-align: left;
+    width: 100%;
+    cursor: pointer;
+}
+
+.task-item.active {
+    font-weight: bold;
+}
+
+/* ===== MAIN CONTENT ===== */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.calendar-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.calendar-controls button {
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    background: #fff;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.calendar-controls .active {
+    background: #eee;
+    font-weight: bold;
+}
+
+.calendar-view {
+    flex: 1;
+    overflow-y: auto;
+    position: relative;
+}
+
+.calendar-panel {
+    display: none;
+}
+
+.calendar-panel.active {
+    display: grid;
+}
+
+/* === DAY VIEW === */
+#dayView {
+    position: relative;
+    height: 1440px;
+    border-left: 2px solid #3aa1ff;
+}
+
+.time-line {
+    position: absolute;
+    left: 0;
+    right: 0;
+    border-top: 1px solid #eee;
+    font-size: 12px;
+    padding-left: 5px;
+    height: 60px;
+}
+
+.event {
+    position: absolute;
+    left: 60px;
+    right: 10px;
+    background: #d7efff;
+    border-left: 4px solid #3aa1ff;
+    padding: 5px;
+    font-size: 13px;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/*!* === WEEK VIEW === *!*/
+/*#weekView {*/
+/*    display: grid;*/
+/*    grid-template-columns: 60px repeat(7, 1fr);*/
+/*    height: 1440px;*/
+/*}*/
+
+/*.week-time {*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    font-size: 12px;*/
+/*    color: #888;*/
+/*    padding-right: 4px;*/
+/*}*/
+
+/*.week-time div {*/
+/*    height: 60px;*/
+/*    border-bottom: 1px solid #eee;*/
+/*}*/
+
+/*.week-day {*/
+/*    border-left: 1px solid #eee;*/
+/*    position: relative;*/
+/*}*/
+
+/*!* === MONTH VIEW === *!*/
+/*#monthView {*/
+/*    display: grid;*/
+/*    grid-template-columns: repeat(7, 1fr);*/
+/*    grid-template-rows: repeat(6, 1fr);*/
+/*    gap: 1px;*/
+/*    background: #ccc;*/
+/*}*/
+
+/*.month-day {*/
+/*    background: #fff;*/
+/*    padding: 6px;*/
+/*    font-size: 13px;*/
+/*    min-height: 80px;*/
+/*}*/
+
+/* === MODAL === */
+.modal {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}

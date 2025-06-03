@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Календарь</title>
+  <link rel="stylesheet" href="css/calendar.css" />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+<div class="sidebar">
+  <h2>Меню <button class="menu-toggle">☰</button></h2>
+
+  <div class="search-bar">
+    <span>🔍</span>
+    <input type="text" placeholder="Поиск">
+  </div>
+
+  <div class="sidebar-group">
+    <div class="text-title-sidebar">Задачи</div>
+    <div class="task-menu">
+      <button class="task-item" data-filter="upcoming">
+        <span>»</span> Приближающиеся <span>12</span>
+      </button>
+      <button class="task-item active" data-filter="today">
+        <span>▣</span> Сегодня <span>5</span>
+      </button>
+      <button class="task-item" disabled>
+        <span>📅</span> Календарь
+      </button>
+      <button class="task-item" disabled>
+        <span>🗒️</span> Заметки-стикеры
+      </button>
+    </div>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="text-title-sidebar">Списки</div>
+    <div class="list-menu">
+      <button class="list-item"><span class="dot personal"></span> Личный <span>3</span></button>
+      <button class="list-item"><span class="dot work"></span> Рабочий <span>6</span></button>
+      <button class="list-item"><span class="dot list1"></span> Список 1 <span>3</span></button>
+      <button id="addListBtn" class="add-list">+ Добавить новый список</button>
+    </div>
+  </div>
+
+  <div class="sidebar-group">
+    <div class="text-title-sidebar">Тэги</div>
+    <div class="tag-menu">
+      <button class="tag-item">Тэг 1</button>
+      <button class="tag-item">Тэг 2</button>
+      <button id="addTagBtn" class="tag-item">+</button>
+    </div>
+  </div>
+
+  <div class="sidebar-bottom">
+    <button class="settings-btn">⚙ Настройки</button>
+    <button class="logout-btn">⇦ Выйти</button>
+  </div>
+</div>
+
+<div class="main-content">
+  <div class="calendar-header">
+    <h1 id="calendarTitle">Календарь</h1>
+    <div class="calendar-controls">
+      <button data-view="day" class="active">День</button>
+      <button data-view="week">Неделя</button>
+      <button data-view="month">Месяц</button>
+      <button id="openModalBtn">＋</button>
+    </div>
+  </div>
+
+  <div class="calendar-view">
+    <div id="dayView" class="calendar-panel active"></div>
+<!--    <div id="weekView" class="calendar-panel"></div>-->
+<!--    <div id="monthView" class="calendar-panel"></div>-->
+  </div>
+</div>
+
+<!-- Модальное окно -->
+<div id="modal" class="modal hidden">
+  <div class="modal-content">
+    <label>Название: <input type="text" id="event-title"></label>
+    <label>Начало (HH:MM): <input type="time" id="event-start" required></label>
+    <label>Длительность (мин): <input type="number" id="event-duration" value="60"></label>
+    <button id="create-event">Добавить</button>
+  </div>
+</div>
+
+<script src="js/calendar.js"></script>
+</body>
+</html>
