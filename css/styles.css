@@ -556,3 +556,31 @@ button#create-event:hover {
     gap: 4px;
     margin-bottom: 4px;
 }
+
+.tag-item-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.tag-delete-overlay {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    width: 18px;
+    height: 18px;
+    font-size: 12px;
+    background: #f44336;
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 2;
+}
+
+.tag-item-wrapper:hover .tag-delete-overlay {
+    opacity: 1;
+}

@@ -86,17 +86,59 @@ document.addEventListener('DOMContentLoaded', () => {
         return stored ? JSON.parse(stored) : [];
     }
 
+    // function renderTags() {
+    //     const tags = loadTags();
+    //     tagMenu.querySelectorAll('.tag-item[data-id]').forEach(el => el.remove());
+    //
+    //     tags.forEach(tag => {
+    //         const tagBtn = document.createElement('button');
+    //         tagBtn.className = 'tag-item';
+    //         tagBtn.textContent = tag.name;
+    //         tagBtn.style.backgroundColor = tag.color;
+    //         tagBtn.dataset.id = tag.id;
+    //         tagMenu.insertBefore(tagBtn, addTagWrapper);
+    //     });
+    // }
+
     function renderTags() {
         const tags = loadTags();
-        tagMenu.querySelectorAll('.tag-item[data-id]').forEach(el => el.remove());
+        tagMenu.querySelectorAll('.tag-item-wrapper').forEach(el => el.remove());
 
         tags.forEach(tag => {
-            const tagBtn = document.createElement('button');
+            const wrapper = document.createElement('div');
+            wrapper.className = 'tag-item-wrapper';
+
+            const tagBtn = document.createElement('div');
             tagBtn.className = 'tag-item';
             tagBtn.textContent = tag.name;
             tagBtn.style.backgroundColor = tag.color;
             tagBtn.dataset.id = tag.id;
-            tagMenu.insertBefore(tagBtn, addTagWrapper);
+
+            const deleteBtn = document.createElement('span');
+            deleteBtn.className = 'tag-delete-overlay';
+            deleteBtn.innerHTML = '✖';
+            deleteBtn.title = 'Удалить тег';
+
+            deleteBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // чтобы не сработали другие клики
+                if (confirm(`Удалить тег "${tag.name}"?`)) {
+                    const updatedTags = tags.filter(t => t.id !== tag.id);
+                    saveTags(updatedTags);
+                    renderTags();
+                    renderModalTagCheckboxes();
+
+                    // удалить тег из всех задач
+                    tasks.forEach(task => {
+                        task.tags = task.tags.filter(id => id != tag.id);
+                    });
+                    saveTasks();
+                    renderTasks();
+                }
+            });
+
+            wrapper.appendChild(tagBtn);
+            wrapper.appendChild(deleteBtn);
+            tagMenu.insertBefore(wrapper, addTagWrapper);
         });
     }
 
