@@ -12,26 +12,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // // Фильтры
-    // document.querySelectorAll('[data-filter]').forEach(btn => {
-    //     btn.addEventListener('click', (e) => {
-    //         const type = e.currentTarget.dataset.filter;
-    //         alert(`Фильтрация задач: ${type}`);
-    //     });
-    // });
-
     //счетчик задач на Сегодня
     function updateTaskCount() {
+        const tasks = loadTasks(); // грузим из localStorage
+        const activeTasks = tasks.filter(task => !task.completed).length;
+
         const taskCountEl = document.getElementById('task-count');
         if (taskCountEl) {
-            const activeTasks = document.querySelectorAll('.actions-item input[type="checkbox"]:not(:checked)').length;
             taskCountEl.textContent = activeTasks;
         }
 
         const taskCountEl2 = document.getElementById('task-count2');
         if (taskCountEl2) {
-            const total = document.querySelectorAll('.actions-item input[type="checkbox"]:not(:checked)').length;
-            taskCountEl2.textContent = total;
+            taskCountEl2.textContent = activeTasks;
         }
     }
 
@@ -58,33 +51,26 @@ document.addEventListener('DOMContentLoaded', () => {
         const deadline = document.getElementById('taskDeadline').value;
         const description = document.getElementById('taskDescription').value.trim();
         const selectedTags = [...document.querySelectorAll('#taskTagList input:checked')]
-            .map(cb => cb.value); // id'шники
-
+            .map(cb => cb.value);
 
         if (!title || !priority || !deadline) {
             alert('Пожалуйста, заполните все обязательные поля.');
             return;
         }
 
-        const newTask = document.createElement('div');
-        newTask.classList.add('actions-item');
+        const newTaskObj = {
+            id: Date.now(),
+            title,
+            priority,
+            deadline,
+            description,
+            tags: selectedTags,
+            completed: false
+        };
 
-        const id = 'task' + (document.querySelectorAll('.actions-item input').length + 1);
-
-        newTask.innerHTML = `
-        <input type="checkbox" id="${id}">
-        <label for="${id}">${title}</label>
-        <div class="action-description">
-            📅 ${deadline} · 🏷️ ${selectedTags.length ? selectedTags.join(', ') : 'Без тегов'} · 🔥 ${priority}
-        </div>
-    `;
-
-        document.querySelector('.actions').appendChild(newTask);
-
-        newTask.querySelector('input').addEventListener('change', (e) => {
-            newTask.classList.toggle('completed', e.target.checked);
-            updateTaskCount();
-        });
+        tasks.push(newTaskObj);
+        saveTasks();
+        createTaskElement(newTaskObj);
 
         form.reset();
         modal.classList.remove('active');
@@ -187,6 +173,57 @@ document.addEventListener('DOMContentLoaded', () => {
             tagContainer.appendChild(label);
         });
     }
+
+    let tasks = loadTasks();
+    renderTasks();
+
+// === Хранилище задач ===
+    function saveTasks() {
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
+    function loadTasks() {
+        const stored = localStorage.getItem('tasks');
+        return stored ? JSON.parse(stored) : [];
+    }
+
+// === Создание DOM-элемента задачи ===
+    function createTaskElement(task) {
+        const newTask = document.createElement('div');
+        newTask.classList.add('actions-item');
+        if (task.completed) newTask.classList.add('completed');
+
+        const id = 'task' + task.id;
+
+        newTask.innerHTML = `
+        <input type="checkbox" id="${id}" ${task.completed ? 'checked' : ''}>
+        <label for="${id}">${task.title}</label>
+        <div class="action-description">
+            📅 ${task.deadline} · 🏷️ ${task.tags.length ? task.tags.join(', ') : 'Без тегов'} · 🔥 ${task.priority}
+        </div>
+    `;
+
+        const checkbox = newTask.querySelector('input');
+        checkbox.addEventListener('change', () => {
+            task.completed = checkbox.checked;
+            newTask.classList.toggle('completed', task.completed);
+            saveTasks();
+            updateTaskCount();
+        });
+
+        document.querySelector('.actions').appendChild(newTask);
+    }
+
+// === Отрисовка всех задач ===
+    function renderTasks() {
+        const container = document.querySelector('.actions');
+        // Удаляем старые (только задачи, не кнопку "Добавить")
+        container.querySelectorAll('.actions-item:not(.add-task)').forEach(el => el.remove());
+
+        tasks.forEach(task => createTaskElement(task));
+        updateTaskCount();
+    }
+
 });
 
 
