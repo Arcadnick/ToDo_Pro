@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    let editTaskId = null;
+
     updateTaskCount();
 
     // Обработка чекбоксов
@@ -28,54 +30,44 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    //модальное окно
-    const modal = document.getElementById('taskModal');
-    const form = document.getElementById('taskForm');
-
     document.getElementById('addTaskBtn').addEventListener('click', () => {
-        modal.classList.add('active');
+        isEditing = false;
+        taskBeingEdited = null;
+        resetModalFields();
+        openModal();
+    });
+
+    const modal = document.getElementById('modal');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const createEventBtn = document.getElementById('create-event');
+
+    modalOverlay.addEventListener('click', closeModal);
+    closeModalBtn.addEventListener('click', closeModal);
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+    });
+
+    function openModal() {
+        modal.classList.add('show');
+        modalOverlay.classList.add('active');
+    }
+
+    function closeModal() {
+        modal.classList.remove('show');
+        modalOverlay.classList.remove('active');
+        resetModalFields();
+    }
+
+    function resetModalFields() {
+        document.getElementById('event-title').value = '';
+        document.getElementById('event-priority').value = '';
+        document.getElementById('event-date').value = '';
+        document.getElementById('event-description').value = '';
+        document.getElementById('taskTagList').innerHTML = '';
         renderModalTagCheckboxes();
-    });
+    }
 
-
-    document.getElementById('cancelModal').addEventListener('click', () => {
-        modal.classList.remove('active');
-        form.reset();
-    });
-
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        const title = document.getElementById('taskTitle').value.trim();
-        const priority = document.getElementById('taskPriority').value;
-        const deadline = document.getElementById('taskDeadline').value;
-        const description = document.getElementById('taskDescription').value.trim();
-        const selectedTags = [...document.querySelectorAll('#taskTagList input:checked')]
-            .map(cb => cb.value);
-
-        if (!title || !priority || !deadline) {
-            alert('Пожалуйста, заполните все обязательные поля.');
-            return;
-        }
-
-        const newTaskObj = {
-            id: Date.now(),
-            title,
-            priority,
-            deadline,
-            description,
-            tags: selectedTags,
-            completed: false
-        };
-
-        tasks.push(newTaskObj);
-        saveTasks();
-        createTaskElement(newTaskObj);
-
-        form.reset();
-        modal.classList.remove('active');
-        updateTaskCount();
-    });
 
     //=== ADDtag
     const tagMenu = document.getElementById('tagMenu');
@@ -199,9 +191,14 @@ document.addEventListener('DOMContentLoaded', () => {
         <input type="checkbox" id="${id}" ${task.completed ? 'checked' : ''}>
         <label for="${id}">${task.title}</label>
         <div class="action-description">
-            📅 ${task.deadline} · 🏷️ ${task.tags.length ? task.tags.join(', ') : 'Без тегов'} · 🔥 ${task.priority}
+            📅 ${task.deadline} · 🏷️ ${task.tags.length ? task.tags.map(id => {
+            const tag = loadTags().find(t => t.id == id);
+            return tag ? tag.name : '(?)';
+        }).join(', ') : 'Без тегов'}
+ · 🔥 ${task.priority}
         </div>
-        <button class="delete-btn" title="Удалить задачу">✖</button>
+        <button class="edit-btn" title="Редактировать">✏</button>
+        <button class="delete-btn" title="Удалить">✖</button>
     `;
 
         const checkbox = newTask.querySelector('input');
@@ -222,36 +219,15 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
+        const editBtn = newTask.querySelector('.edit-btn');
+        editBtn.addEventListener('click', () => {
+            openEditModal(task);
+        });
+
         document.querySelector('.actions').appendChild(newTask);
     }
 
-//     function createTaskElement(task) {
-//         const newTask = document.createElement('div');
-//         newTask.classList.add('actions-item');
-//         if (task.completed) newTask.classList.add('completed');
-//
-//         const id = 'task' + task.id;
-//
-//         newTask.innerHTML = `
-//         <input type="checkbox" id="${id}" ${task.completed ? 'checked' : ''}>
-//         <label for="${id}">${task.title}</label>
-//         <div class="action-description">
-//             📅 ${task.deadline} · 🏷️ ${task.tags.length ? task.tags.join(', ') : 'Без тегов'} · 🔥 ${task.priority}
-//         </div>
-//     `;
-//
-//         const checkbox = newTask.querySelector('input');
-//         checkbox.addEventListener('change', () => {
-//             task.completed = checkbox.checked;
-//             newTask.classList.toggle('completed', task.completed);
-//             saveTasks();
-//             updateTaskCount();
-//         });
-//
-//         document.querySelector('.actions').appendChild(newTask);
-//     }
-
-// === Отрисовка всех задач ===
+    // === Отрисовка всех задач ===
     function renderTasks() {
         const container = document.querySelector('.actions');
         // Удаляем старые (только задачи, не кнопку "Добавить")
@@ -261,6 +237,69 @@ document.addEventListener('DOMContentLoaded', () => {
         updateTaskCount();
     }
 
+    // === Редактирование ===
+    let isEditing = false;
+    let taskBeingEdited = null;
+
+    function openEditModal(task) {
+        isEditing = true;
+        taskBeingEdited = task;
+
+        document.getElementById('event-title').value = task.title;
+        document.getElementById('event-priority').value = task.priority;
+        document.getElementById('event-date').value = task.deadline;
+        document.getElementById('event-description').value = task.description;
+
+        openModal();
+        renderModalTagCheckboxes();
+
+        const tagCheckboxes = document.querySelectorAll('#taskTagList input');
+        tagCheckboxes.forEach(cb => {
+            cb.checked = task.tags.includes(cb.value);
+        });
+    }
+
+    //==
+    createEventBtn.addEventListener('click', () => {
+        const title = document.getElementById('event-title').value.trim();
+        const priority = document.getElementById('event-priority').value;
+        const deadline = document.getElementById('event-date').value;
+        const description = document.getElementById('event-description').value.trim();
+        const selectedTags = [...document.querySelectorAll('#taskTagList input:checked')]
+            .map(cb => cb.value);
+
+        if (!title || !priority || !deadline) {
+            alert('Пожалуйста, заполните все обязательные поля');
+            return;
+        }
+
+        if (isEditing && taskBeingEdited) {
+            taskBeingEdited.title = title;
+            taskBeingEdited.priority = priority;
+            taskBeingEdited.deadline = deadline;
+            taskBeingEdited.description = description;
+            taskBeingEdited.tags = selectedTags;
+            saveTasks();
+            renderTasks();
+        } else {
+            const newTaskObj = {
+                id: Date.now(),
+                title,
+                priority,
+                deadline,
+                description,
+                tags: selectedTags,
+                completed: false
+            };
+
+            tasks.push(newTaskObj);
+            saveTasks();
+            createTaskElement(newTaskObj);
+        }
+
+        closeModal();
+        updateTaskCount();
+    });
 });
 
 

@@ -94,52 +94,128 @@
     </div>
 </div>
 
-<div class="modal-overlay" id="taskModal">
-    <div class="modal">
-        <h2>Новая задача</h2>
-        <form id="taskForm">
-            <label>
-                Название<span class="required">*</span><br>
-                <input type="text" id="taskTitle" maxlength="100" required>
-            </label>
+<!-- Затемнение -->
+<div id="modalOverlay" class="modal-overlay"></div>
 
-            <label>
-                Приоритет<span class="required">*</span><br>
-                <select id="taskPriority" required>
-                    <option value="">Выберите...</option>
-                    <option value="low">Низкий</option>
-                    <option value="medium">Средний</option>
-                    <option value="high">Высокий</option>
-                </select>
-            </label>
+<!-- Панельная модалка справа -->
+<div id="modal" class="modal">
+<!--    <div class="modal-content">-->
+<!--        <button class="modal-close" id="closeModalBtn">×</button>-->
 
-            <label>
-                Срок выполнения<span class="required">*</span><br>
-                <input type="date" id="taskDeadline" required>
-            </label>
+<!--        <label>Название:-->
+<!--            <input type="text" id="event-title" placeholder="Введите название задачи" />-->
+<!--        </label>-->
 
-            <label>
-                Описание<br>
-                <textarea id="taskDescription"></textarea>
-            </label>
+<!--        <label>Дата:-->
+<!--            <input type="date" id="event-date" required />-->
+<!--        </label>-->
 
-            <label>
-                Теги<br>
-                <div id="taskTagList" class="tag-checkbox-list"></div>
-            </label>
+<!--        <label>Время начала:-->
+<!--            <input type="time" id="event-start" required />-->
+<!--        </label>-->
 
+<!--        <label>Длительность (мин):-->
+<!--            <input type="number" id="event-duration" value="60" />-->
+<!--        </label>-->
+
+<!--        <button id="create-event">Сохранить</button>-->
+<!--    </div>-->
+    <div class="modal-content">
+        <button class="modal-close" id="closeModalBtn">×</button>
+
+<!--        <label>Название <span class="required">*</span>:-->
+<!--            <input type="text" id="event-title" placeholder="Введите название задачи" maxlength="100" />-->
+<!--        </label>-->
+        <label>
+            <div class="label-title">
+                Название<span class="required">*</span>:
+            </div>
+            <input type="text" id="event-title" placeholder="Введите название задачи" maxlength="100" />
+        </label>
+
+
+        <label>
+            <div class="label-title">
+                Приоритет<span class="required">*</span>:
+            </div>
+<!--            Приоритет <span class="required">*</span>:-->
+            <select id="event-priority" required>
+                <option value="">Выберите...</option>
+                <option value="low">Низкий</option>
+                <option value="medium">Средний</option>
+                <option value="high">Высокий</option>
+            </select>
+        </label>
+
+        <label>
+            <div class="label-title">
+                Срок выполнения<span class="required">*</span>:
+            </div>
+<!--            Срок выполнения <span class="required">*</span>:-->
+            <input type="date" id="event-date" required />
+        </label>
+
+        <label>Описание:
+            <textarea id="event-description" placeholder="Добавьте описание задачи..."></textarea>
+        </label>
+
+        <label>Теги:
+            <div id="taskTagList" class="tag-checkbox-list"></div>
+        </label>
+
+        <button id="create-event">Сохранить</button>
+    </div>
+
+</div>
+
+
+
+<!--<div class="modal-overlay" id="taskModal">-->
+<!--    <div class="modal">-->
+<!--        <h2>Новая задача</h2>-->
+<!--        <form id="taskForm">-->
 <!--            <label>-->
-<!--                Вложения<br>-->
-<!--                <input type="file" id="taskFiles" multiple>-->
+<!--                Название<span class="required">*</span><br>-->
+<!--                <input type="text" id="taskTitle" maxlength="100" required>-->
 <!--            </label>-->
 
-            <div class="modal-actions">
-                <button type="submit">Добавить</button>
-                <button type="button" id="cancelModal">Отмена</button>
-            </div>
-        </form>
-    </div>
-</div>
+<!--            <label>-->
+<!--                Приоритет<span class="required">*</span><br>-->
+<!--                <select id="taskPriority" required>-->
+<!--                    <option value="">Выберите...</option>-->
+<!--                    <option value="low">Низкий</option>-->
+<!--                    <option value="medium">Средний</option>-->
+<!--                    <option value="high">Высокий</option>-->
+<!--                </select>-->
+<!--            </label>-->
+
+<!--            <label>-->
+<!--                Срок выполнения<span class="required">*</span><br>-->
+<!--                <input type="date" id="taskDeadline" required>-->
+<!--            </label>-->
+
+<!--            <label>-->
+<!--                Описание<br>-->
+<!--                <textarea id="taskDescription"></textarea>-->
+<!--            </label>-->
+
+<!--            <label>-->
+<!--                Теги<br>-->
+<!--                <div id="taskTagList" class="tag-checkbox-list"></div>-->
+<!--            </label>-->
+
+<!--&lt;!&ndash;            <label>&ndash;&gt;-->
+<!--&lt;!&ndash;                Вложения<br>&ndash;&gt;-->
+<!--&lt;!&ndash;                <input type="file" id="taskFiles" multiple>&ndash;&gt;-->
+<!--&lt;!&ndash;            </label>&ndash;&gt;-->
+
+<!--            <div class="modal-actions">-->
+<!--                <button type="submit">Добавить</button>-->
+<!--                <button type="button" id="cancelModal">Отмена</button>-->
+<!--            </div>-->
+<!--        </form>-->
+<!--    </div>-->
+<!--</div>-->
 <script src="js/script.js"></script>
 </body>
 </html>
