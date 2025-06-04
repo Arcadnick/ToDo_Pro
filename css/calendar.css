@@ -24,7 +24,7 @@
     border: none;
     background-color: #eee;
     border-radius: 4px;
-    cursor: pointer;
+    /*cursor: pointer;*/
 }
 
 .calendar-controls button.active {
@@ -141,15 +141,15 @@
     display: block;
 }
 
-input[type="text"],
-input[type="time"],
-input[type="date"],
-input[type="number"] {
-    padding: 6px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-    width: 100%;
-}
+/*input[type="text"],*/
+/*input[type="time"],*/
+/*input[type="date"],*/
+/*input[type="number"] {*/
+/*    padding: 6px;*/
+/*    border-radius: 4px;*/
+/*    border: 1px solid #ccc;*/
+/*    width: 100%;*/
+/*}*/
 
 button#create-event {
     padding: 10px;
