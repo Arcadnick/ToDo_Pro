@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     updateTaskCount();
 
-    // Обработка чекбоксов
     document.querySelectorAll('.actions-item input[type="checkbox"]').forEach(cb => {
         cb.addEventListener('change', (e) => {
             const item = e.target.closest('.actions-item');
@@ -14,7 +13,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    //счетчик задач на Сегодня
     function updateTaskCount() {
         const tasks = loadTasks();
         const activeTasks = tasks.filter(task => !task.completed).length;
@@ -69,114 +67,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    //=== ADDtag
     const tagMenu = document.getElementById('tagMenu');
     const addTagWrapper = document.getElementById('addTagWrapper');
-
-    function generateTagId() {
-        return Date.now();
-    }
-
-    function saveTags(tags) {
-        localStorage.setItem('tags', JSON.stringify(tags));
-    }
-
-    function loadTags() {
-        const stored = localStorage.getItem('tags');
-        return stored ? JSON.parse(stored) : [];
-    }
-
-    function renderTags() {
-        const tags = loadTags();
-        tagMenu.querySelectorAll('.tag-item-wrapper').forEach(el => el.remove());
-
-        tags.forEach(tag => {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'tag-item-wrapper';
-
-            const tagBtn = document.createElement('div');
-            tagBtn.className = 'tag-item';
-            tagBtn.textContent = tag.name;
-            tagBtn.style.backgroundColor = tag.color;
-            tagBtn.dataset.id = tag.id;
-
-            const deleteBtn = document.createElement('span');
-            deleteBtn.className = 'tag-delete-overlay';
-            deleteBtn.innerHTML = '✖';
-            deleteBtn.title = 'Удалить тег';
-
-            deleteBtn.addEventListener('click', (e) => {
-                e.stopPropagation(); // чтобы не сработали другие клики
-                if (confirm(`Удалить тег "${tag.name}"?`)) {
-                    const updatedTags = tags.filter(t => t.id !== tag.id);
-                    saveTags(updatedTags);
-                    renderTags();
-                    renderFilterTagOptions();
-                    renderModalTagCheckboxes();
-
-                    // удалить тег из всех задач
-                    tasks.forEach(task => {
-                        task.tags = task.tags.filter(id => id != tag.id);
-                    });
-                    saveTasks();
-                    renderTasks();
-                }
-            });
-
-            wrapper.appendChild(tagBtn);
-            wrapper.appendChild(deleteBtn);
-            tagMenu.insertBefore(wrapper, addTagWrapper);
-        });
-    }
-
-    function showAddTagForm() {
-        const form = document.createElement('div');
-        form.className = 'add-tag-form';
-        form.innerHTML = `
-        <input type="text" id="newTagName" maxlength="20" placeholder="Имя">
-        <input type="color" id="newTagColor" value="#eeeeee">
-        <button id="confirmAddTag">✔</button>
-        <button id="cancelAddTag">✖</button>
-    `;
-
-        addTagWrapper.replaceChildren(form);
-
-        document.getElementById('cancelAddTag').addEventListener('click', () => {
-            restoreAddTagButton();
-        });
-
-        document.getElementById('confirmAddTag').addEventListener('click', () => {
-            const name = document.getElementById('newTagName').value.trim();
-            const color = document.getElementById('newTagColor').value;
-
-            if (!name) {
-                alert('Введите имя тега');
-                return;
-            }
-
-            const tags = loadTags();
-            tags.push({
-                id: generateTagId(),
-                name: name,
-                color: color
-            });
-
-            saveTags(tags);
-            renderTags();
-            renderFilterTagOptions();
-            restoreAddTagButton();
-        });
-    }
-
-    function restoreAddTagButton() {
-        addTagWrapper.innerHTML = `<button id="addTagBtn" class="tag-item">+</button>`;
-        document.getElementById('addTagBtn').addEventListener('click', showAddTagForm);
-    }
 
     restoreAddTagButton();
     renderTags();
 
-    //===tagcheckbox
     function renderModalTagCheckboxes() {
         const tagContainer = document.getElementById('taskTagList');
         tagContainer.innerHTML = ''; // очищаем
@@ -222,8 +118,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('sortBy').addEventListener('change', renderTasks);
     }
 
-
-// === Хранилище задач ===
     function saveTasks() {
         localStorage.setItem('tasks', JSON.stringify(tasks));
     }
@@ -233,7 +127,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return stored ? JSON.parse(stored) : [];
     }
 
-// === Создание DOM-элемента задачи ===
     function createTaskElement(task) {
         const newTask = document.createElement('div');
         newTask.classList.add('actions-item');
@@ -281,16 +174,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('.actions').appendChild(newTask);
     }
 
-    // === Отрисовка всех задач ===
-    // function renderTasks() {
-    //     const container = document.querySelector('.actions');
-    //     // Удаляем старые (только задачи, не кнопку "Добавить")
-    //     container.querySelectorAll('.actions-item:not(.add-task)').forEach(el => el.remove());
-    //
-    //     tasks.forEach(task => createTaskElement(task));
-    //     updateTaskCount();
-    // }
-
     function renderTasks() {
         const container = document.querySelector('.actions');
         container.querySelectorAll('.actions-item:not(.add-task)').forEach(el => el.remove());
@@ -319,8 +202,6 @@ document.addEventListener('DOMContentLoaded', () => {
         updateTaskCount();
     }
 
-
-    // === Редактирование ===
     let isEditing = false;
     let taskBeingEdited = null;
 
@@ -332,6 +213,8 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('event-priority').value = task.priority;
         document.getElementById('event-date').value = task.deadline;
         document.getElementById('event-description').value = task.description;
+        document.getElementById('event-start').value = task.startTime;
+        document.getElementById('event-duration').value = task.duration;
 
         openModal();
         renderModalTagCheckboxes();
@@ -342,14 +225,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    //==
     createEventBtn.addEventListener('click', () => {
         const title = document.getElementById('event-title').value.trim();
         const priority = document.getElementById('event-priority').value;
         const deadline = document.getElementById('event-date').value;
         const description = document.getElementById('event-description').value.trim();
+        const startTime = document.getElementById('event-start').value;
+        const duration = parseInt(document.getElementById('event-duration').value) || 60;
         const selectedTags = [...document.querySelectorAll('#taskTagList input:checked')]
             .map(cb => cb.value);
+
 
         if (!title || !priority || !deadline) {
             alert('Пожалуйста, заполните все обязательные поля');
@@ -362,6 +247,9 @@ document.addEventListener('DOMContentLoaded', () => {
             taskBeingEdited.deadline = deadline;
             taskBeingEdited.description = description;
             taskBeingEdited.tags = selectedTags;
+            taskBeingEdited.startTime = startTime;
+            taskBeingEdited.duration = duration;
+
             saveTasks();
             renderTasks();
         } else {
@@ -372,6 +260,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 deadline,
                 description,
                 tags: selectedTags,
+                startTime,
+                duration,
                 completed: false
             };
 
