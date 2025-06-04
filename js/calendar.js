@@ -82,9 +82,6 @@ document.addEventListener('DOMContentLoaded', () => {
             localStorage.setItem('tasks', JSON.stringify(tasks));
         }
 
-        tasks.push(task);
-        localStorage.setItem('tasks', JSON.stringify(tasks));
-
         closeModal();
         renderMonthView();
     });
