@@ -88,3 +88,67 @@ body {
     opacity: 0.5;
     transform: scale(0.98);
 }
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background: rgba(0,0,0,0.3);
+    z-index: 1000;
+    display: none;
+}
+
+.modal-overlay.active {
+    display: block;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 400px;
+    max-width: 90%;
+    background: white;
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+    z-index: 1001;
+    box-shadow: -4px 0 15px rgba(0, 0, 0, 0.2);
+    display: block; /* остаётся в потоке, просто смещается */
+}
+
+.modal.show {
+    transform: translateX(0);
+}
+
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.modal-buttons button {
+    padding: 8px 14px;
+    font-size: 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.modal-buttons button[type="submit"] {
+    background: #007bff;
+    color: white;
+}
+
+.modal-buttons button[type="button"] {
+    background: #ccc;
+    color: #333;
+}
