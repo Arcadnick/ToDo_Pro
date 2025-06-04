@@ -58,29 +58,34 @@
   <div class="calendar-header">
     <h1 id="calendarTitle">Календарь</h1>
     <div class="calendar-controls">
-      <button data-view="day" class="active">День</button>
-      <button data-view="week">Неделя</button>
-      <button data-view="month">Месяц</button>
+      <button data-view="month" class="active">Месяц</button>
       <button id="openModalBtn">＋</button>
     </div>
   </div>
 
   <div class="calendar-view">
-    <div id="dayView" class="calendar-panel active"></div>
-<!--    <div id="weekView" class="calendar-panel"></div>-->
-<!--    <div id="monthView" class="calendar-panel"></div>-->
+    <div id="monthView" class="calendar-panel active"></div>
   </div>
 </div>
 
 <!-- Модальное окно -->
-<div id="modal" class="modal hidden">
+<!-- Затемнение -->
+<div id="modalOverlay" class="modal-overlay"></div>
+
+<!-- Модалка справа -->
+<div id="modal" class="modal">
   <div class="modal-content">
+    <button class="modal-close" id="closeModalBtn">×</button>
     <label>Название: <input type="text" id="event-title"></label>
-    <label>Начало (HH:MM): <input type="time" id="event-start" required></label>
+    <label>Дата: <input type="date" id="event-date" required></label>
+    <label>Время начала (HH:MM): <input type="time" id="event-start" required></label>
     <label>Длительность (мин): <input type="number" id="event-duration" value="60"></label>
     <button id="create-event">Добавить</button>
   </div>
 </div>
+
+
+
 
 <script src="js/calendar.js"></script>
 </body>

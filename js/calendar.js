@@ -1,80 +1,111 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const viewButtons = document.querySelectorAll('.calendar-controls button[data-view]');
-    const panels = {
-        day: document.getElementById('dayView'),
-        week: document.getElementById('weekView'),
-        month: document.getElementById('monthView')
-    };
-
-    // Переключение вида
-    viewButtons.forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.calendar-panel').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.calendar-controls button').forEach(b => b.classList.remove('active'));
-
-            btn.classList.add('active');
-            const view = btn.dataset.view;
-            panels[view].classList.add('active');
-        });
-    });
-
-    // Отрисовать DAY
-    for (let h = 0; h < 24; h++) {
-        const div = document.createElement('div');
-        div.className = 'time-line';
-        div.style.top = `${h * 60}px`;
-        div.textContent = `${h.toString().padStart(2, '0')}:00`;
-        panels.day.appendChild(div);
-    }
-
-    // Отрисовать WEEK
-    const weekTime = document.createElement('div');
-    weekTime.className = 'week-time';
-    for (let h = 0; h < 24; h++) {
-        const t = document.createElement('div');
-        t.textContent = `${h.toString().padStart(2, '0')}:00`;
-        weekTime.appendChild(t);
-    }
-    panels.week.appendChild(weekTime);
-
-    for (let i = 0; i < 7; i++) {
-        const day = document.createElement('div');
-        day.className = 'week-day';
-        panels.week.appendChild(day);
-    }
-
-    // Отрисовать MONTH
-    for (let i = 1; i <= 42; i++) {
-        const day = document.createElement('div');
-        day.className = 'month-day';
-        day.textContent = i <= 31 ? i : '';
-        panels.month.appendChild(day);
-    }
-
-    // Модалка
+    const monthView = document.getElementById('monthView');
     const modal = document.getElementById('modal');
-    document.getElementById('openModalBtn').addEventListener('click', () => {
-        modal.classList.remove('hidden');
+    const modalOverlay = document.getElementById('modalOverlay');
+    const openModalBtn = document.getElementById('openModalBtn');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+    const createEventBtn = document.getElementById('create-event');
+
+    // Открытие модалки
+    openModalBtn.addEventListener('click', () => {
+        modal.classList.add('show');
+        modalOverlay.classList.add('active');
     });
 
-    document.getElementById('create-event').addEventListener('click', () => {
-        const title = document.getElementById('event-title').value;
+    // Закрытие по затемнению
+    modalOverlay.addEventListener('click', closeModal);
+
+    // Закрытие по кнопке ×
+    closeModalBtn.addEventListener('click', closeModal);
+
+    // Закрытие по Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+    });
+
+    function closeModal() {
+        modal.classList.remove('show');
+        modalOverlay.classList.remove('active');
+    }
+
+    // Добавление задачи
+    createEventBtn.addEventListener('click', () => {
+        const title = document.getElementById('event-title').value.trim();
+        const startDate = document.getElementById('event-date').value;
         const start = document.getElementById('event-start').value;
-        const duration = parseInt(document.getElementById('event-duration').value, 10);
+        const duration = parseInt(document.getElementById('event-duration').value) || 60;
 
-        if (!title || !start || isNaN(duration)) return;
+        if (!title || !start || !startDate) {
+            alert('Введите все данные');
+            return;
+        }
 
-        const [h, m] = start.split(':').map(Number);
-        const top = (h * 60 + m);
-        const height = duration;
+        const task = { title, start, duration, startDate };
+        const tasks = JSON.parse(localStorage.getItem('calendarTasks') || '[]');
+        tasks.push(task);
+        localStorage.setItem('calendarTasks', JSON.stringify(tasks));
 
-        const div = document.createElement('div');
-        div.className = 'event';
-        div.style.top = `${top}px`;
-        div.style.height = `${height}px`;
-        div.textContent = title;
+        closeModal();
+        document.getElementById('event-title').value = '';
+        document.getElementById('event-date').value = '';
+        document.getElementById('event-start').value = '';
+        document.getElementById('event-duration').value = 60;
 
-        panels.day.appendChild(div);
-        modal.classList.add('hidden');
+        renderMonthView();
     });
+
+    // Отрисовка месяца
+    function renderMonthView() {
+        monthView.innerHTML = '';
+
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = today.getMonth();
+
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+
+        const firstWeekDay = (firstDay.getDay() + 6) % 7;
+        const totalDays = lastDay.getDate();
+        const totalCells = firstWeekDay + totalDays;
+        const rows = Math.ceil(totalCells / 7);
+
+        const tasks = JSON.parse(localStorage.getItem('calendarTasks') || '[]');
+        const grid = document.createElement('div');
+        grid.className = 'month-grid';
+
+        for (let i = 0; i < rows * 7; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'day-cell';
+
+            const dayNum = i - firstWeekDay + 1;
+
+            if (i >= firstWeekDay && dayNum <= totalDays) {
+                const date = new Date(year, month, dayNum);
+                const dateStr = date.toISOString().slice(0, 10);
+
+                const label = document.createElement('div');
+                label.className = 'date-label';
+                label.textContent = dayNum;
+                cell.appendChild(label);
+
+                const dayTasks = tasks.filter(task => task.startDate === dateStr);
+                dayTasks.forEach(task => {
+                    const event = document.createElement('div');
+                    event.className = 'event-item';
+                    event.textContent = `${task.start} – ${task.title}`;
+                    cell.appendChild(event);
+                });
+            }
+
+            grid.appendChild(cell);
+        }
+
+        monthView.appendChild(grid);
+    }
+
+    renderMonthView();
 });
+
