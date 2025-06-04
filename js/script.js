@@ -86,20 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
         return stored ? JSON.parse(stored) : [];
     }
 
-    // function renderTags() {
-    //     const tags = loadTags();
-    //     tagMenu.querySelectorAll('.tag-item[data-id]').forEach(el => el.remove());
-    //
-    //     tags.forEach(tag => {
-    //         const tagBtn = document.createElement('button');
-    //         tagBtn.className = 'tag-item';
-    //         tagBtn.textContent = tag.name;
-    //         tagBtn.style.backgroundColor = tag.color;
-    //         tagBtn.dataset.id = tag.id;
-    //         tagMenu.insertBefore(tagBtn, addTagWrapper);
-    //     });
-    // }
-
     function renderTags() {
         const tags = loadTags();
         tagMenu.querySelectorAll('.tag-item-wrapper').forEach(el => el.remove());
@@ -125,6 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     const updatedTags = tags.filter(t => t.id !== tag.id);
                     saveTags(updatedTags);
                     renderTags();
+                    renderFilterTagOptions();
                     renderModalTagCheckboxes();
 
                     // удалить тег из всех задач
@@ -176,6 +163,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             saveTags(tags);
             renderTags();
+            renderFilterTagOptions();
             restoreAddTagButton();
         });
     }
@@ -210,6 +198,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let tasks = loadTasks();
     renderTasks();
+
+    renderFilterTagOptions();
+    setupFilters();
+
+    function renderFilterTagOptions() {
+        const tagSelect = document.getElementById('filterTag');
+        const tags = loadTags();
+
+        tagSelect.innerHTML = `<option value="">Все теги</option>`;
+        tags.forEach(tag => {
+            const option = document.createElement('option');
+            option.value = tag.id;
+            option.textContent = tag.name;
+            tagSelect.appendChild(option);
+        });
+    }
+
+    function setupFilters() {
+        document.getElementById('filterStatus').addEventListener('change', renderTasks);
+        document.getElementById('filterPriority').addEventListener('change', renderTasks);
+        document.getElementById('filterTag').addEventListener('change', renderTasks);
+        document.getElementById('sortBy').addEventListener('change', renderTasks);
+    }
+
 
 // === Хранилище задач ===
     function saveTasks() {
@@ -270,14 +282,43 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // === Отрисовка всех задач ===
+    // function renderTasks() {
+    //     const container = document.querySelector('.actions');
+    //     // Удаляем старые (только задачи, не кнопку "Добавить")
+    //     container.querySelectorAll('.actions-item:not(.add-task)').forEach(el => el.remove());
+    //
+    //     tasks.forEach(task => createTaskElement(task));
+    //     updateTaskCount();
+    // }
+
     function renderTasks() {
         const container = document.querySelector('.actions');
-        // Удаляем старые (только задачи, не кнопку "Добавить")
         container.querySelectorAll('.actions-item:not(.add-task)').forEach(el => el.remove());
 
-        tasks.forEach(task => createTaskElement(task));
+        let filtered = [...tasks];
+
+        const status = document.getElementById('filterStatus').value;
+        const priority = document.getElementById('filterPriority').value;
+        const tag = document.getElementById('filterTag').value;
+        const sort = document.getElementById('sortBy').value;
+
+        if (status === 'active') filtered = filtered.filter(t => !t.completed);
+        else if (status === 'completed') filtered = filtered.filter(t => t.completed);
+
+        if (priority) filtered = filtered.filter(t => t.priority === priority);
+        if (tag) filtered = filtered.filter(t => t.tags.includes(tag));
+
+        if (sort === 'deadline') {
+            filtered.sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+        } else if (sort === 'priority') {
+            const order = { high: 3, medium: 2, low: 1 };
+            filtered.sort((a, b) => order[b.priority] - order[a.priority]);
+        }
+
+        filtered.forEach(task => createTaskElement(task));
         updateTaskCount();
     }
+
 
     // === Редактирование ===
     let isEditing = false;
@@ -342,6 +383,21 @@ document.addEventListener('DOMContentLoaded', () => {
         closeModal();
         updateTaskCount();
     });
+
+    document.getElementById('filterToggle').addEventListener('click', () => {
+        const menu = document.getElementById('filterMenu');
+        menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+    });
+
+// закрывать при клике вне меню
+    document.addEventListener('click', (e) => {
+        const toggle = document.getElementById('filterToggle');
+        const menu = document.getElementById('filterMenu');
+        if (!toggle.contains(e.target) && !menu.contains(e.target)) {
+            menu.style.display = 'none';
+        }
+    });
+
 });
 
 
