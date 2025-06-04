@@ -57,54 +57,102 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Отрисовка месяца
+    let viewYear = new Date().getFullYear();
+    let viewMonth = new Date().getMonth();
+
+    document.getElementById('prevMonthBtn').addEventListener('click', () => {
+        viewMonth--;
+        if (viewMonth < 0) {
+            viewMonth = 11;
+            viewYear--;
+        }
+        renderMonthView();
+    });
+
+    document.getElementById('nextMonthBtn').addEventListener('click', () => {
+        viewMonth++;
+        if (viewMonth > 11) {
+            viewMonth = 0;
+            viewYear++;
+        }
+        renderMonthView();
+    });
+
     function renderMonthView() {
+        const monthView = document.getElementById('monthView');
+        const calendarTitle = document.getElementById('calendarTitle');
+
         monthView.innerHTML = '';
 
-        const today = new Date();
-        const year = today.getFullYear();
-        const month = today.getMonth();
-
-        const firstDay = new Date(year, month, 1);
-        const lastDay = new Date(year, month + 1, 0);
-
-        const firstWeekDay = (firstDay.getDay() + 6) % 7;
-        const totalDays = lastDay.getDate();
-        const totalCells = firstWeekDay + totalDays;
-        const rows = Math.ceil(totalCells / 7);
+        const firstDay = new Date(viewYear, viewMonth, 1);
+        const totalDays = new Date(viewYear, viewMonth + 1, 0).getDate();
+        const startWeekDay = (firstDay.getDay() + 6) % 7;
 
         const tasks = JSON.parse(localStorage.getItem('calendarTasks') || '[]');
+
+        // Название месяца
+        const monthNames = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
+        calendarTitle.textContent = `${monthNames[viewMonth]} ${viewYear}`;
+
+        // Заголовок дней недели
+        const weekNames = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+        const weekRow = document.createElement('div');
+        weekRow.className = 'weekdays';
+        weekNames.forEach(day => {
+            const el = document.createElement('div');
+            el.className = 'weekday';
+            el.textContent = day;
+            weekRow.appendChild(el);
+        });
+        monthView.appendChild(weekRow);
+
+        // Сетка месяца
         const grid = document.createElement('div');
         grid.className = 'month-grid';
 
-        for (let i = 0; i < rows * 7; i++) {
+        for (let i = 0; i < startWeekDay; i++) {
+            const empty = document.createElement('div');
+            empty.className = 'day-cell';
+            empty.style.visibility = 'hidden';
+            grid.appendChild(empty);
+        }
+
+        for (let dayNum = 1; dayNum <= totalDays; dayNum++) {
             const cell = document.createElement('div');
             cell.className = 'day-cell';
 
-            const dayNum = i - firstWeekDay + 1;
+            const cellDate = new Date(viewYear, viewMonth, dayNum);
+            const dateStr = cellDate.toISOString().slice(0, 10);
 
-            if (i >= firstWeekDay && dayNum <= totalDays) {
-                const date = new Date(year, month, dayNum);
-                const dateStr = date.toISOString().slice(0, 10);
+            const label = document.createElement('div');
+            label.className = 'date-label';
+            label.textContent = dayNum;
+            cell.appendChild(label);
 
-                const label = document.createElement('div');
-                label.className = 'date-label';
-                label.textContent = dayNum;
-                cell.appendChild(label);
-
-                const dayTasks = tasks.filter(task => task.startDate === dateStr);
-                dayTasks.forEach(task => {
-                    const event = document.createElement('div');
-                    event.className = 'event-item';
-                    event.textContent = `${task.start} – ${task.title}`;
-                    cell.appendChild(event);
-                });
+            // Подсветка сегодняшнего дня
+            const now = new Date();
+            if (
+                now.getFullYear() === viewYear &&
+                now.getMonth() === viewMonth &&
+                now.getDate() === dayNum
+            ) {
+                cell.classList.add('today');
             }
+
+            const dayTasks = tasks.filter(t => t.startDate === dateStr);
+            dayTasks.forEach(task => {
+                const event = document.createElement('div');
+                event.className = 'event-item';
+                event.textContent = `${task.start} – ${task.title}`;
+                cell.appendChild(event);
+            });
 
             grid.appendChild(cell);
         }
 
         monthView.appendChild(grid);
     }
+
 
     renderMonthView();
 });

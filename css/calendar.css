@@ -160,3 +160,50 @@ button#create-event {
     cursor: pointer;
 }
 
+.weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    font-weight: bold;
+    padding: 10px;
+    margin-bottom: 5px;
+    background-color: #f1f1f1;
+    border-radius: 6px;
+}
+
+.weekday {
+    font-size: 14px;
+    color: #333;
+}
+
+.month-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+}
+.calendar-title {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.calendar-title button {
+    font-size: 20px;
+    padding: 4px 10px;
+    border: none;
+    background: #eee;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.calendar-title button:hover {
+    background: #ddd;
+}
+
+.today {
+    border: 2px solid #007bff;
+    box-shadow: 0 0 0 2px #e6f0ff;
+}
+
+
