@@ -206,4 +206,64 @@ button#create-event {
     box-shadow: 0 0 0 2px #e6f0ff;
 }
 
+.day-task {
+    background: #fdfdfd;
+    padding: 12px 14px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border: 1px solid #e0e0e0;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.day-task span {
+    flex: 1;
+    word-break: break-word;
+    white-space: pre-wrap;
+    font-size: 14px;
+    color: #333;
+}
+
+.day-task .task-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-left: 12px;
+}
+
+.day-task button {
+    padding: 4px 10px;
+    font-size: 13px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background: #f2f2f2;
+    color: #444;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.day-task button:hover {
+    background: #e6e6e6;
+    border-color: #ccc;
+}
+
+.day-task button.edit {
+    background: #ffeeba;
+    color: #856404;
+}
+
+.day-task button.delete {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.day-cell:hover {
+    background-color: #f0f8ff;
+    transition: background-color 0.2s ease;
+}
+
+
+
 

@@ -32,7 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Добавление задачи
     createEventBtn.addEventListener('click', () => {
-        const title = document.getElementById('event-title').value.trim();
+        let title = document.getElementById('event-title').value.trim();
+        title = title.slice(0, 100); // на всякий случай отрежем, если обошли maxlength
         const startDate = document.getElementById('event-date').value;
         const start = document.getElementById('event-start').value;
         const duration = parseInt(document.getElementById('event-duration').value) || 60;
@@ -122,12 +123,25 @@ document.addEventListener('DOMContentLoaded', () => {
             cell.className = 'day-cell';
 
             const cellDate = new Date(viewYear, viewMonth, dayNum);
-            const dateStr = cellDate.toISOString().slice(0, 10);
+            const dateStr = cellDate.getFullYear() + '-' +
+                String(cellDate.getMonth() + 1).padStart(2, '0') + '-' +
+                String(cellDate.getDate()).padStart(2, '0');
+
 
             const label = document.createElement('div');
             label.className = 'date-label';
             label.textContent = dayNum;
+            label.style.cursor = 'pointer';
+            label.textContent = dayNum;
             cell.appendChild(label);
+
+            cell.style.cursor = 'pointer';
+            cell.addEventListener('click', () => {
+                openDayModal(dateStr, `${dayNum}.${viewMonth + 1}.${viewYear}`);
+            });
+
+            cell.appendChild(label);
+
 
             // Подсветка сегодняшнего дня
             const now = new Date();
@@ -153,6 +167,75 @@ document.addEventListener('DOMContentLoaded', () => {
         monthView.appendChild(grid);
     }
 
+    const dayModal = document.getElementById('dayModal');
+    const dayModalOverlay = document.getElementById('dayModalOverlay');
+    const closeDayModalBtn = document.getElementById('closeDayModalBtn');
+    const dayTaskList = document.getElementById('dayTaskList');
+    const dayModalTitle = document.getElementById('dayModalTitle');
+
+    closeDayModalBtn.addEventListener('click', () => {
+        dayModal.classList.remove('show');
+        dayModalOverlay.classList.remove('active');
+    });
+
+    dayModalOverlay.addEventListener('click', () => {
+        dayModal.classList.remove('show');
+        dayModalOverlay.classList.remove('active');
+    });
+
+    function openDayModal(dateStr, readableDate) {
+        const tasks = JSON.parse(localStorage.getItem('calendarTasks') || '[]');
+        const filtered = tasks.filter(t => t.startDate === dateStr);
+
+        dayModalTitle.textContent = `Задачи на ${readableDate}`;
+        dayTaskList.innerHTML = '';
+
+        if (filtered.length === 0) {
+            dayTaskList.innerHTML = '<p>Нет задач</p>';
+        } else {
+            filtered.forEach((task, index) => {
+                const div = document.createElement('div');
+                div.className = 'day-task';
+                div.innerHTML = `
+                    <span>${task.start} – ${task.title}</span>
+                    <button class="edit">✎</button>
+                    <button class="delete">🗑</button>
+                `;
+
+                // Удаление
+                div.querySelector('.delete').onclick = () => {
+                    const updated = tasks.filter(t => !(t.startDate === task.startDate && t.title === task.title && t.start === task.start));
+                    localStorage.setItem('calendarTasks', JSON.stringify(updated));
+                    openDayModal(dateStr, readableDate);
+                    renderMonthView();
+                };
+
+                // Редактирование
+                div.querySelector('.edit').onclick = () => {
+                    // Заполняем основную модалку
+                    document.getElementById('event-title').value = task.title;
+                    document.getElementById('event-date').value = task.startDate;
+                    document.getElementById('event-start').value = task.start;
+                    document.getElementById('event-duration').value = task.duration;
+
+                    // Удаляем старую задачу
+                    const updated = tasks.filter(t => !(t.startDate === task.startDate && t.title === task.title && t.start === task.start));
+                    localStorage.setItem('calendarTasks', JSON.stringify(updated));
+
+                    // Показываем форму
+                    modal.classList.add('show');
+                    modalOverlay.classList.add('active');
+                    dayModal.classList.remove('show');
+                    dayModalOverlay.classList.remove('active');
+                };
+
+                dayTaskList.appendChild(div);
+            });
+        }
+
+        dayModal.classList.add('show');
+        dayModalOverlay.classList.add('active');
+    }
 
     renderMonthView();
 });

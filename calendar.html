@@ -17,14 +17,14 @@
   <div class="sidebar-group">
     <div class="text-title-sidebar">Задачи</div>
     <div class="task-menu">
-      <button class="task-item active" onclick="location.href='index.html'">
+      <button class="task-item" onclick="location.href='index.html'">
         <div class="task-item-left">
           <span class="task-item-icon">📎</span> Сегодня
         </div>
         <span class="task-item-count" id="task-count2">52</span>
       </button>
 
-      <button class="task-item" onclick="location.href='calendar.html'">
+      <button class="task-item active" onclick="location.href='calendar.html'">
         <div class="task-item-left">
           <span class="task-item-icon">📅</span> Календарь
         </div>
@@ -92,5 +92,15 @@
 
 
 <script src="js/calendar.js"></script>
+<!-- Окно дня -->
+<div id="dayModalOverlay" class="modal-overlay"></div>
+<div id="dayModal" class="modal">
+  <div class="modal-content">
+    <button class="modal-close" id="closeDayModalBtn">×</button>
+    <h2 id="dayModalTitle">Задачи на день</h2>
+    <div id="dayTaskList"></div>
+  </div>
+</div>
+
 </body>
 </html>
