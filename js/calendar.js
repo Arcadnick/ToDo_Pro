@@ -9,19 +9,16 @@ document.addEventListener('DOMContentLoaded', () => {
     restoreAddTagButton('addTagWrapper', () => renderTags('tagMenu', 'addTagWrapper'), 'tagMenu');
     renderTags('tagMenu', 'addTagWrapper');
 
-    // Открытие модалки
     openModalBtn.addEventListener('click', () => {
         modal.classList.add('show');
         modalOverlay.classList.add('active');
+        renderModalTagCheckboxes();
     });
 
-    // Закрытие по затемнению
     modalOverlay.addEventListener('click', closeModal);
 
-    // Закрытие по кнопке ×
     closeModalBtn.addEventListener('click', closeModal);
 
-    // Закрытие по Escape
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
             closeModal();
@@ -33,34 +30,41 @@ document.addEventListener('DOMContentLoaded', () => {
         modalOverlay.classList.remove('active');
     }
 
-    // Добавление задачи
     createEventBtn.addEventListener('click', () => {
-        let title = document.getElementById('event-title').value.trim();
-        title = title.slice(0, 100); // на всякий случай отрежем, если обошли maxlength
-        const startDate = document.getElementById('event-date').value;
-        const start = document.getElementById('event-start').value;
+        const title = document.getElementById('event-title').value.trim();
+        const deadline = document.getElementById('event-date').value;
+        const startTime = document.getElementById('event-start').value;
         const duration = parseInt(document.getElementById('event-duration').value) || 60;
+        const priority = document.getElementById('event-priority').value;
+        const description = document.getElementById('event-description').value.trim();
+        const selectedTags = [...document.querySelectorAll('#taskTagList input:checked')].map(cb => cb.value);
 
-        if (!title || !start || !startDate) {
-            alert('Введите все данные');
+        if (!title || !priority || !deadline) {
+            alert('Пожалуйста, заполните все обязательные поля');
             return;
         }
 
-        const task = { title, start, duration, startDate };
-        const tasks = JSON.parse(localStorage.getItem('calendarTasks') || '[]');
+        const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+
+        const task = {
+            id: Date.now(),
+            title,
+            deadline,
+            startTime,
+            duration,
+            priority,
+            description,
+            tags: selectedTags,
+            completed: false
+        };
+
         tasks.push(task);
-        localStorage.setItem('calendarTasks', JSON.stringify(tasks));
+        localStorage.setItem('tasks', JSON.stringify(tasks));
 
         closeModal();
-        document.getElementById('event-title').value = '';
-        document.getElementById('event-date').value = '';
-        document.getElementById('event-start').value = '';
-        document.getElementById('event-duration').value = 60;
-
         renderMonthView();
     });
 
-    // Отрисовка месяца
     let viewYear = new Date().getFullYear();
     let viewMonth = new Date().getMonth();
 
@@ -92,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const totalDays = new Date(viewYear, viewMonth + 1, 0).getDate();
         const startWeekDay = (firstDay.getDay() + 6) % 7;
 
-        const tasks = JSON.parse(localStorage.getItem('calendarTasks') || '[]');
+        const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
 
         // Название месяца
         const monthNames = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
@@ -156,11 +160,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 cell.classList.add('today');
             }
 
-            const dayTasks = tasks.filter(t => t.startDate === dateStr);
+            const dayTasks = tasks.filter(t => t.deadline === dateStr);
             dayTasks.forEach(task => {
                 const event = document.createElement('div');
                 event.className = 'event-item';
-                event.textContent = `${task.start} – ${task.title}`;
+                console.log(task);
+                event.textContent = `${task.startTime} – ${task.title}`;
                 cell.appendChild(event);
             });
 
@@ -187,8 +192,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function openDayModal(dateStr, readableDate) {
-        const tasks = JSON.parse(localStorage.getItem('calendarTasks') || '[]');
-        const filtered = tasks.filter(t => t.startDate === dateStr);
+        const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+        const filtered = tasks.filter(t => t.deadline === dateStr);
 
         dayModalTitle.textContent = `Задачи на ${readableDate}`;
         dayTaskList.innerHTML = '';
@@ -200,30 +205,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 const div = document.createElement('div');
                 div.className = 'day-task';
                 div.innerHTML = `
-                    <span>${task.start} – ${task.title}</span>
+                    <span>${task.startTime} – ${task.title}</span>
                     <button class="edit">✎</button>
                     <button class="delete">🗑</button>
                 `;
 
                 // Удаление
                 div.querySelector('.delete').onclick = () => {
-                    const updated = tasks.filter(t => !(t.startDate === task.startDate && t.title === task.title && t.start === task.start));
-                    localStorage.setItem('calendarTasks', JSON.stringify(updated));
+                    // const updated = tasks.filter(t => !(t.startDate === task.startDate && t.title === task.title && t.start === task.start));
+                    // localStorage.setItem('calendarTasks', JSON.stringify(updated));
+                    const updated = tasks.filter(t => t.id !== task.id);
+                    localStorage.setItem('tasks', JSON.stringify(updated));
                     openDayModal(dateStr, readableDate);
                     renderMonthView();
                 };
 
                 // Редактирование
                 div.querySelector('.edit').onclick = () => {
-                    // Заполняем основную модалку
                     document.getElementById('event-title').value = task.title;
-                    document.getElementById('event-date').value = task.startDate;
-                    document.getElementById('event-start').value = task.start;
+                    document.getElementById('event-priority').value = task.priority;
+                    document.getElementById('event-date').value = task.deadline;
+                    document.getElementById('event-description').value = task.description;
+                    document.getElementById('event-start').value = task.startTime;
                     document.getElementById('event-duration').value = task.duration;
 
+                    const tagCheckboxes = document.querySelectorAll('#taskTagList input');
+                    tagCheckboxes.forEach(cb => {
+                        cb.checked = task.tags.includes(cb.value);
+                    });
+
                     // Удаляем старую задачу
-                    const updated = tasks.filter(t => !(t.startDate === task.startDate && t.title === task.title && t.start === task.start));
-                    localStorage.setItem('calendarTasks', JSON.stringify(updated));
+                    const updated = tasks.filter(t => t.id !== task.id);
+                    localStorage.setItem('tasks', JSON.stringify(updated));
 
                     // Показываем форму
                     modal.classList.add('show');
@@ -241,5 +254,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     renderMonthView();
+
+    function renderModalTagCheckboxes() {
+        const tagContainer = document.getElementById('taskTagList');
+        tagContainer.innerHTML = '';
+
+        const tags = JSON.parse(localStorage.getItem('tags') || '[]');
+        tags.forEach(tag => {
+            const label = document.createElement('label');
+            label.className = 'tag-checkbox';
+            label.style.backgroundColor = tag.color;
+
+            label.innerHTML = `
+            <input type="checkbox" value="${tag.id}">
+            ${tag.name}
+        `;
+
+            tagContainer.appendChild(label);
+        });
+    }
+
 });
 
