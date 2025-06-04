@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function closeModal() {
         modal.classList.remove('show');
         modalOverlay.classList.remove('active');
+        window.editingTaskId = null;
     }
 
     createEventBtn.addEventListener('click', () => {
@@ -46,17 +47,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
 
-        const task = {
-            id: Date.now(),
-            title,
-            deadline,
-            startTime,
-            duration,
-            priority,
-            description,
-            tags: selectedTags,
-            completed: false
-        };
+        if (window.editingTaskId) {
+            const updatedTasks = tasks.map(t => {
+                if (t.id === window.editingTaskId) {
+                    return {
+                        ...t,
+                        title,
+                        deadline,
+                        startTime,
+                        duration,
+                        priority,
+                        description,
+                        tags: selectedTags
+                    };
+                }
+                return t;
+            });
+            localStorage.setItem('tasks', JSON.stringify(updatedTasks));
+            window.editingTaskId = null;
+        } else {
+            // Новая задача
+            const task = {
+                id: Date.now(),
+                title,
+                deadline,
+                startTime,
+                duration,
+                priority,
+                description,
+                tags: selectedTags,
+                completed: false
+            };
+            tasks.push(task);
+            localStorage.setItem('tasks', JSON.stringify(tasks));
+        }
 
         tasks.push(task);
         localStorage.setItem('tasks', JSON.stringify(tasks));
@@ -98,11 +122,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
 
-        // Название месяца
         const monthNames = ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
         calendarTitle.textContent = `${monthNames[viewMonth]} ${viewYear}`;
 
-        // Заголовок дней недели
         const weekNames = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
         const weekRow = document.createElement('div');
         weekRow.className = 'weekdays';
@@ -114,7 +136,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         monthView.appendChild(weekRow);
 
-        // Сетка месяца
         const grid = document.createElement('div');
         grid.className = 'month-grid';
 
@@ -149,8 +170,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             cell.appendChild(label);
 
-
-            // Подсветка сегодняшнего дня
             const now = new Date();
             if (
                 now.getFullYear() === viewYear &&
@@ -206,21 +225,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 div.className = 'day-task';
                 div.innerHTML = `
                     <span>${task.startTime} – ${task.title}</span>
-                    <button class="edit">✎</button>
-                    <button class="delete">🗑</button>
+                    <button class="edit" title="Редактировать">✏</button>
+                    <button class="delete" title="Удалить">✖</button>
                 `;
 
-                // Удаление
                 div.querySelector('.delete').onclick = () => {
-                    // const updated = tasks.filter(t => !(t.startDate === task.startDate && t.title === task.title && t.start === task.start));
-                    // localStorage.setItem('calendarTasks', JSON.stringify(updated));
                     const updated = tasks.filter(t => t.id !== task.id);
                     localStorage.setItem('tasks', JSON.stringify(updated));
                     openDayModal(dateStr, readableDate);
                     renderMonthView();
                 };
 
-                // Редактирование
                 div.querySelector('.edit').onclick = () => {
                     document.getElementById('event-title').value = task.title;
                     document.getElementById('event-priority').value = task.priority;
@@ -234,11 +249,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         cb.checked = task.tags.includes(cb.value);
                     });
 
-                    // Удаляем старую задачу
-                    const updated = tasks.filter(t => t.id !== task.id);
-                    localStorage.setItem('tasks', JSON.stringify(updated));
+                    window.editingTaskId = task.id;
 
-                    // Показываем форму
                     modal.classList.add('show');
                     modalOverlay.classList.add('active');
                     dayModal.classList.remove('show');
