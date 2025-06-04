@@ -2,9 +2,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const addBtn = document.getElementById('addStickerBtn');
     const stickersGrid = document.getElementById('stickers');
 
+    const stickerModalOverlay = document.getElementById('stickerModalOverlay');
+    const stickerModal = document.getElementById('stickerModal');
+    const stickerForm = document.getElementById('stickerForm');
+    const modalTitle = document.getElementById('modalTitle');
+    const cancelModalBtn = document.getElementById('cancelModal');
+
+    const inputTitle = document.getElementById('stickerTitle');
+    const inputContent = document.getElementById('stickerContent');
+    const inputColor = document.getElementById('stickerColor');
+
     let stickers = JSON.parse(localStorage.getItem('stickers')) || [];
     let dragSourceId = null;
     let lastTargetId = null;
+    let editingStickerId = null;
 
     function saveStickers() {
         localStorage.setItem('stickers', JSON.stringify(stickers));
@@ -37,21 +48,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const contentElem = document.createElement('p');
         contentElem.textContent = content;
 
-        titleElem.addEventListener('dblclick', () => {
-            const newTitle = prompt('Редактировать заголовок:', titleElem.textContent);
-            if (newTitle !== null) {
-                titleElem.textContent = newTitle;
-                updateSticker(id, { title: newTitle });
-            }
-        });
-
-        contentElem.addEventListener('dblclick', () => {
-            const newContent = prompt('Редактировать содержимое:', contentElem.textContent);
-            if (newContent !== null) {
-                contentElem.textContent = newContent;
-                updateSticker(id, { content: newContent });
-            }
-        });
+        titleElem.addEventListener('dblclick', () => openEditModal(id));
+        contentElem.addEventListener('dblclick', () => openEditModal(id));
 
         const deleteBtn = document.createElement('button');
         deleteBtn.textContent = '×';
@@ -71,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
         sticker.addEventListener('dragover', (e) => {
             e.preventDefault();
             if (id !== dragSourceId) {
-                lastTargetId = id; // запоминаем последний стикер, над которым прошли
+                lastTargetId = id;
             }
         });
 
@@ -93,32 +91,80 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function renderAllStickers() {
         stickersGrid.querySelectorAll('.sticker:not(.add-sticker)').forEach(el => el.remove());
-        stickers.forEach(data => {
-            createStickerElement(data);
-        });
+        stickers.forEach(data => createStickerElement(data));
     }
 
-    addBtn.addEventListener('click', () => {
-        const title = prompt('Введите заголовок заметки:');
-        const content = prompt('Введите текст заметки:');
-        if (!title || !content) return;
+    function openStickerModal() {
+        stickerModal.classList.add('show');
+        stickerModalOverlay.classList.add('active');
+    }
 
-        const colors = ['yellow', 'blue', 'pink', 'orange', 'gray'];
-        const color = prompt('Выберите цвет: yellow, blue, pink, orange, gray', 'gray');
-        if (!colors.includes(color)) return alert('Неверный цвет!');
+    function closeStickerModal() {
+        stickerModal.classList.remove('show');
+        stickerModalOverlay.classList.remove('active');
+    }
 
-        const newSticker = {
-            id: Date.now(),
-            title,
-            content,
-            color
+    function openEditModal(id) {
+        const sticker = stickers.find(s => s.id === id);
+        if (!sticker) return;
+
+        editingStickerId = id;
+        modalTitle.textContent = 'Редактировать заметку';
+        inputTitle.value = sticker.title;
+        inputContent.value = sticker.content;
+        inputColor.value = sticker.color;
+        openStickerModal();
+    }
+
+    cancelModalBtn.addEventListener('click', () => {
+        closeStickerModal();
+        editingStickerId = null;
+    });
+
+    stickerForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const updated = {
+            title: inputTitle.value.trim(),
+            content: inputContent.value.trim(),
+            color: inputColor.value
         };
 
-        stickers.push(newSticker);
-        saveStickers();
+        if (!updated.title || !updated.content) return alert('Заполните все поля');
+
+        if (editingStickerId) {
+            updateSticker(editingStickerId, updated);
+            editingStickerId = null;
+        } else {
+            const newSticker = {
+                id: Date.now(),
+                ...updated
+            };
+            stickers.push(newSticker);
+            saveStickers();
+        }
+
+        closeStickerModal();
+        stickerForm.reset();
         renderAllStickers();
+    });
+
+    addBtn.addEventListener('click', () => {
+        editingStickerId = null;
+        modalTitle.textContent = 'Новая заметка';
+        stickerForm.reset();
+        inputColor.value = 'yellow';
+        openStickerModal();
+    });
+
+    // Закрытие по клику на overlay
+    stickerModalOverlay.addEventListener('click', () => {
+        closeStickerModal();
+        editingStickerId = null;
     });
 
     renderAllStickers();
 });
+
+
 
