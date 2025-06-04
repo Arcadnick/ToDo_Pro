@@ -46,7 +46,7 @@ function renderTags(tagMenuId = 'tagMenu', addWrapperId = 'addTagWrapper', onUpd
                 });
                 saveTasks(tasks);
 
-                renderTags(tagMenuId, addTagWrapperId, onUpdate);
+                renderTags(tagMenuId, addWrapperId, onUpdate);
                 onUpdate();
             }
         });
