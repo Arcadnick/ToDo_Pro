@@ -334,3 +334,16 @@ body {
 .tag-checkbox input {
     margin: 0;
 }
+
+.delete-btn {
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 18px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.delete-btn:hover {
+    color: #f44336;
+}

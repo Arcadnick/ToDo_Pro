@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //счетчик задач на Сегодня
     function updateTaskCount() {
-        const tasks = loadTasks(); // грузим из localStorage
+        const tasks = loadTasks();
         const activeTasks = tasks.filter(task => !task.completed).length;
 
         const taskCountEl = document.getElementById('task-count');
@@ -201,6 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="action-description">
             📅 ${task.deadline} · 🏷️ ${task.tags.length ? task.tags.join(', ') : 'Без тегов'} · 🔥 ${task.priority}
         </div>
+        <button class="delete-btn" title="Удалить задачу">✖</button>
     `;
 
         const checkbox = newTask.querySelector('input');
@@ -211,8 +212,44 @@ document.addEventListener('DOMContentLoaded', () => {
             updateTaskCount();
         });
 
+        const deleteBtn = newTask.querySelector('.delete-btn');
+        deleteBtn.addEventListener('click', () => {
+            if (confirm('Удалить эту задачу?')) {
+                tasks = tasks.filter(t => t.id !== task.id);
+                saveTasks();
+                newTask.remove();
+                updateTaskCount();
+            }
+        });
+
         document.querySelector('.actions').appendChild(newTask);
     }
+
+//     function createTaskElement(task) {
+//         const newTask = document.createElement('div');
+//         newTask.classList.add('actions-item');
+//         if (task.completed) newTask.classList.add('completed');
+//
+//         const id = 'task' + task.id;
+//
+//         newTask.innerHTML = `
+//         <input type="checkbox" id="${id}" ${task.completed ? 'checked' : ''}>
+//         <label for="${id}">${task.title}</label>
+//         <div class="action-description">
+//             📅 ${task.deadline} · 🏷️ ${task.tags.length ? task.tags.join(', ') : 'Без тегов'} · 🔥 ${task.priority}
+//         </div>
+//     `;
+//
+//         const checkbox = newTask.querySelector('input');
+//         checkbox.addEventListener('change', () => {
+//             task.completed = checkbox.checked;
+//             newTask.classList.toggle('completed', task.completed);
+//             saveTasks();
+//             updateTaskCount();
+//         });
+//
+//         document.querySelector('.actions').appendChild(newTask);
+//     }
 
 // === Отрисовка всех задач ===
     function renderTasks() {
