@@ -73,105 +73,105 @@ document.addEventListener('DOMContentLoaded', () => {
     const tagMenu = document.getElementById('tagMenu');
     const addTagWrapper = document.getElementById('addTagWrapper');
 
-    function generateTagId() {
-        return Date.now();
-    }
+    // function generateTagId() {
+    //     return Date.now();
+    // }
 
-    function saveTags(tags) {
-        localStorage.setItem('tags', JSON.stringify(tags));
-    }
+    // function saveTags(tags) {
+    //     localStorage.setItem('tags', JSON.stringify(tags));
+    // }
 
-    function loadTags() {
-        const stored = localStorage.getItem('tags');
-        return stored ? JSON.parse(stored) : [];
-    }
+    // function loadTags() {
+    //     const stored = localStorage.getItem('tags');
+    //     return stored ? JSON.parse(stored) : [];
+    // }
 
-    function renderTags() {
-        const tags = loadTags();
-        tagMenu.querySelectorAll('.tag-item-wrapper').forEach(el => el.remove());
-
-        tags.forEach(tag => {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'tag-item-wrapper';
-
-            const tagBtn = document.createElement('div');
-            tagBtn.className = 'tag-item';
-            tagBtn.textContent = tag.name;
-            tagBtn.style.backgroundColor = tag.color;
-            tagBtn.dataset.id = tag.id;
-
-            const deleteBtn = document.createElement('span');
-            deleteBtn.className = 'tag-delete-overlay';
-            deleteBtn.innerHTML = '✖';
-            deleteBtn.title = 'Удалить тег';
-
-            deleteBtn.addEventListener('click', (e) => {
-                e.stopPropagation(); // чтобы не сработали другие клики
-                if (confirm(`Удалить тег "${tag.name}"?`)) {
-                    const updatedTags = tags.filter(t => t.id !== tag.id);
-                    saveTags(updatedTags);
-                    renderTags();
-                    renderFilterTagOptions();
-                    renderModalTagCheckboxes();
-
-                    // удалить тег из всех задач
-                    tasks.forEach(task => {
-                        task.tags = task.tags.filter(id => id != tag.id);
-                    });
-                    saveTasks();
-                    renderTasks();
-                }
-            });
-
-            wrapper.appendChild(tagBtn);
-            wrapper.appendChild(deleteBtn);
-            tagMenu.insertBefore(wrapper, addTagWrapper);
-        });
-    }
-
-    function showAddTagForm() {
-        const form = document.createElement('div');
-        form.className = 'add-tag-form';
-        form.innerHTML = `
-        <input type="text" id="newTagName" maxlength="20" placeholder="Имя">
-        <input type="color" id="newTagColor" value="#eeeeee">
-        <button id="confirmAddTag">✔</button>
-        <button id="cancelAddTag">✖</button>
-    `;
-
-        addTagWrapper.replaceChildren(form);
-
-        document.getElementById('cancelAddTag').addEventListener('click', () => {
-            restoreAddTagButton();
-        });
-
-        document.getElementById('confirmAddTag').addEventListener('click', () => {
-            const name = document.getElementById('newTagName').value.trim();
-            const color = document.getElementById('newTagColor').value;
-
-            if (!name) {
-                alert('Введите имя тега');
-                return;
-            }
-
-            const tags = loadTags();
-            tags.push({
-                id: generateTagId(),
-                name: name,
-                color: color
-            });
-
-            saveTags(tags);
-            renderTags();
-            renderFilterTagOptions();
-            restoreAddTagButton();
-        });
-    }
-
-    function restoreAddTagButton() {
-        addTagWrapper.innerHTML = `<button id="addTagBtn" class="tag-item">+</button>`;
-        document.getElementById('addTagBtn').addEventListener('click', showAddTagForm);
-    }
+    // function renderTags() {
+    //     const tags = loadTags();
+    //     tagMenu.querySelectorAll('.tag-item-wrapper').forEach(el => el.remove());
+    //
+    //     tags.forEach(tag => {
+    //         const wrapper = document.createElement('div');
+    //         wrapper.className = 'tag-item-wrapper';
+    //
+    //         const tagBtn = document.createElement('div');
+    //         tagBtn.className = 'tag-item';
+    //         tagBtn.textContent = tag.name;
+    //         tagBtn.style.backgroundColor = tag.color;
+    //         tagBtn.dataset.id = tag.id;
+    //
+    //         const deleteBtn = document.createElement('span');
+    //         deleteBtn.className = 'tag-delete-overlay';
+    //         deleteBtn.innerHTML = '✖';
+    //         deleteBtn.title = 'Удалить тег';
+    //
+    //         deleteBtn.addEventListener('click', (e) => {
+    //             e.stopPropagation(); // чтобы не сработали другие клики
+    //             if (confirm(`Удалить тег "${tag.name}"?`)) {
+    //                 const updatedTags = tags.filter(t => t.id !== tag.id);
+    //                 saveTags(updatedTags);
+    //                 renderTags();
+    //                 renderFilterTagOptions();
+    //                 renderModalTagCheckboxes();
+    //
+    //                 // удалить тег из всех задач
+    //                 tasks.forEach(task => {
+    //                     task.tags = task.tags.filter(id => id != tag.id);
+    //                 });
+    //                 saveTasks();
+    //                 renderTasks();
+    //             }
+    //         });
+    //
+    //         wrapper.appendChild(tagBtn);
+    //         wrapper.appendChild(deleteBtn);
+    //         tagMenu.insertBefore(wrapper, addTagWrapper);
+    //     });
+    // }
+    //
+    // function showAddTagForm() {
+    //     const form = document.createElement('div');
+    //     form.className = 'add-tag-form';
+    //     form.innerHTML = `
+    //     <input type="text" id="newTagName" maxlength="20" placeholder="Имя">
+    //     <input type="color" id="newTagColor" value="#eeeeee">
+    //     <button id="confirmAddTag">✔</button>
+    //     <button id="cancelAddTag">✖</button>
+    // `;
+    //
+    //     addTagWrapper.replaceChildren(form);
+    //
+    //     document.getElementById('cancelAddTag').addEventListener('click', () => {
+    //         restoreAddTagButton();
+    //     });
+    //
+    //     document.getElementById('confirmAddTag').addEventListener('click', () => {
+    //         const name = document.getElementById('newTagName').value.trim();
+    //         const color = document.getElementById('newTagColor').value;
+    //
+    //         if (!name) {
+    //             alert('Введите имя тега');
+    //             return;
+    //         }
+    //
+    //         const tags = loadTags();
+    //         tags.push({
+    //             id: generateTagId(),
+    //             name: name,
+    //             color: color
+    //         });
+    //
+    //         saveTags(tags);
+    //         renderTags();
+    //         renderFilterTagOptions();
+    //         restoreAddTagButton();
+    //     });
+    // }
+    //
+    // function restoreAddTagButton() {
+    //     addTagWrapper.innerHTML = `<button id="addTagBtn" class="tag-item">+</button>`;
+    //     document.getElementById('addTagBtn').addEventListener('click', showAddTagForm);
+    // }
 
     restoreAddTagButton();
     renderTags();

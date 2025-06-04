@@ -6,6 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModalBtn = document.getElementById('closeModalBtn');
     const createEventBtn = document.getElementById('create-event');
 
+    restoreAddTagButton('addTagWrapper', () => renderTags('tagMenu', 'addTagWrapper'), 'tagMenu');
+    renderTags('tagMenu', 'addTagWrapper');
+
     // Открытие модалки
     openModalBtn.addEventListener('click', () => {
         modal.classList.add('show');
