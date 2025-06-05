@@ -10,18 +10,27 @@
 <!-- Боковое меню -->
 <div class="sidebar">
     <h2>Меню </h2>
-    <div class="search-bar">
+    <div class="search-bar" style="position: relative;">
         <span>🔍</span>
-        <input type="text" placeholder="Поиск">
+        <input type="text" placeholder="Поиск" id="taskSearchInput">
+        <div id="searchResults" class="search-results"></div>
     </div>
+
     <div class="sidebar-group">
         <div class="text-title-sidebar">Задачи</div>
         <div class="task-menu">
             <button class="task-item active" onclick="location.href='index.html'">
                 <div class="task-item-left">
-                    <span class="task-item-icon">📎</span> Сегодня
+                    <span class="task-item-icon">📎</span> Все
                 </div>
                 <span class="task-item-count" id="task-count2">52</span>
+            </button>
+
+            <button class="task-item" onclick="location.href='today.html'">
+                <div class="task-item-left">
+                    <span class="task-item-icon">📋</span> Сегодня
+                </div>
+                <span class="task-item-count" id="task-count3">52</span>
             </button>
 
             <button class="task-item" onclick="location.href='calendar.html'">
@@ -51,7 +60,7 @@
 
 <!-- Основная рабочая область -->
 <div class="main-content">
-    <h1>Сегодня <span id="task-count">52</span></h1>
+    <h1>Задачи <span id="task-count">52</span></h1>
 
     <div class="task-controls">
         <div class="dropdown-wrapper">

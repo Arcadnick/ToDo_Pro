@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    updateTodayCount?.();
     let editTaskId = null;
 
     updateTaskCount();
@@ -154,6 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
             newTask.classList.toggle('completed', task.completed);
             saveTasks();
             updateTaskCount();
+            updateTodayCount?.();
         });
 
         const deleteBtn = newTask.querySelector('.delete-btn');
@@ -163,6 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 saveTasks();
                 newTask.remove();
                 updateTaskCount();
+                updateTodayCount?.();
             }
         });
 
@@ -200,6 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         filtered.forEach(task => createTaskElement(task));
         updateTaskCount();
+        updateTodayCount?.();
     }
 
     let isEditing = false;
@@ -272,6 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         closeModal();
         updateTaskCount();
+        updateTodayCount?.();
     });
 
     document.getElementById('filterToggle').addEventListener('click', () => {
@@ -287,6 +292,50 @@ document.addEventListener('DOMContentLoaded', () => {
             menu.style.display = 'none';
         }
     });
+
+    const searchInput = document.getElementById('taskSearchInput');
+    const searchResults = document.getElementById('searchResults');
+
+    searchInput.addEventListener('input', () => {
+        const query = searchInput.value.trim().toLowerCase();
+        const allTasks = loadTasks();
+
+        if (!query) {
+            searchResults.style.display = 'none';
+            searchResults.innerHTML = '';
+            return;
+        }
+
+        const matched = allTasks.filter(task => task.title.toLowerCase().includes(query));
+
+        if (matched.length === 0) {
+            searchResults.style.display = 'none';
+            searchResults.innerHTML = '';
+            return;
+        }
+
+        searchResults.innerHTML = '';
+        matched.slice(0, 10).forEach(task => {
+            const item = document.createElement('div');
+            item.textContent = `${task.title} (${task.deadline})`;
+            item.addEventListener('click', () => {
+                openEditModal(task);
+                searchResults.style.display = 'none';
+                searchResults.innerHTML = '';
+            });
+            searchResults.appendChild(item);
+        });
+
+        searchResults.style.display = 'block';
+    });
+
+// Закрывать подсказку при клике вне поиска
+    document.addEventListener('click', (e) => {
+        if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+            searchResults.style.display = 'none';
+        }
+    });
+
 
 });
 

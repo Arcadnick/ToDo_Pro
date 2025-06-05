@@ -6,6 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeModalBtn = document.getElementById('closeModalBtn');
     const createEventBtn = document.getElementById('create-event');
 
+    updateTodayCount?.();
+
     restoreAddTagButton('addTagWrapper', () => renderTags('tagMenu', 'addTagWrapper'), 'tagMenu');
     renderTags('tagMenu', 'addTagWrapper');
 
@@ -282,6 +284,64 @@ document.addEventListener('DOMContentLoaded', () => {
             tagContainer.appendChild(label);
         });
     }
+
+    const searchInput = document.getElementById('taskSearchInput');
+    const searchResults = document.getElementById('searchResults');
+
+    searchInput.addEventListener('input', () => {
+        const query = searchInput.value.trim().toLowerCase();
+        const allTasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+
+        if (!query) {
+            searchResults.style.display = 'none';
+            searchResults.innerHTML = '';
+            return;
+        }
+
+        const matched = allTasks.filter(task => task.title.toLowerCase().includes(query));
+
+        if (matched.length === 0) {
+            searchResults.style.display = 'none';
+            searchResults.innerHTML = '';
+            return;
+        }
+
+        searchResults.innerHTML = '';
+        matched.slice(0, 10).forEach(task => {
+            const item = document.createElement('div');
+            item.textContent = `${task.title} (${task.deadline})`;
+            item.addEventListener('click', () => {
+                document.getElementById('event-title').value = task.title;
+                document.getElementById('event-priority').value = task.priority;
+                document.getElementById('event-date').value = task.deadline;
+                document.getElementById('event-description').value = task.description;
+                document.getElementById('event-start').value = task.startTime;
+                document.getElementById('event-duration').value = task.duration;
+
+                const tagCheckboxes = document.querySelectorAll('#taskTagList input');
+                tagCheckboxes.forEach(cb => {
+                    cb.checked = task.tags.includes(cb.value);
+                });
+
+                window.editingTaskId = task.id;
+
+                document.getElementById('modal').classList.add('show');
+                document.getElementById('modalOverlay').classList.add('active');
+
+                searchResults.style.display = 'none';
+                searchResults.innerHTML = '';
+            });
+            searchResults.appendChild(item);
+        });
+
+        searchResults.style.display = 'block';
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+            searchResults.style.display = 'none';
+        }
+    });
 
 });
 

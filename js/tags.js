@@ -111,3 +111,12 @@ function loadTasks() {
 function saveTasks(tasks) {
     localStorage.setItem('tasks', JSON.stringify(tasks));
 }
+
+function updateTodayCount() {
+    const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+    const today = new Date().toISOString().split('T')[0];
+    const todayCount = tasks.filter(t => t.deadline === today && !t.completed).length;
+
+    const el = document.getElementById('task-count3');
+    if (el) el.textContent = todayCount;
+}

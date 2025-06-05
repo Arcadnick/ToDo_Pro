@@ -17,6 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let lastTargetId = null;
     let editingStickerId = null;
 
+    updateTodayCount?.();
+
     function saveStickers() {
         localStorage.setItem('stickers', JSON.stringify(stickers));
     }
